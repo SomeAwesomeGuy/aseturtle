@@ -19,7 +19,7 @@ public interface TurtleServer {
 
     boolean createNewUser(String username, String password);
 
-    void pull(String username);
+    boolean pull(String username);
 
     GameState pullGame(String username);
 
