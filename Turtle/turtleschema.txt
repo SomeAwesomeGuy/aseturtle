@@ -1,0 +1,15 @@
+CREATE TABLE users
+(
+    username        varchar(20) NOT NULL UNIQUE,
+    password        varchar(20) NOT NULL,
+    admin           bit NOT NULL,
+    games_played    int,
+    games_won       int,
+    rounds_played   int,
+    thumb_count     int,
+    index_count     int,
+    middle_count    int,
+    ring_count      int,
+    pinkie_count    int,
+    round_percent_sum   decimal(10,8)
+);
