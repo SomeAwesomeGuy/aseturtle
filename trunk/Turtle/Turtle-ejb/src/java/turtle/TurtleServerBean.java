@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  *
@@ -18,6 +20,7 @@ import javax.ejb.Stateless;
  */
 @Stateless
 public class TurtleServerBean implements TurtleServer {
+    @PersistenceContext(unitName="TurtleServer") private EntityManager manager;
 
     private boolean locked;
 
@@ -29,6 +32,9 @@ public class TurtleServerBean implements TurtleServer {
 
         connectedUsers = new HashMap<String,User>();
         playerList = new ArrayList<User>();
+
+        Users u = new Users("testuser", "test", true);
+        manager.persist(u);
     }
 
 
