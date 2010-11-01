@@ -22,19 +22,19 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "users")
 @NamedQueries({
-    @NamedQuery(name = "DBUsers.findAll", query = "SELECT d FROM DBUsers d"),
-    @NamedQuery(name = "DBUsers.findByUsername", query = "SELECT d FROM DBUsers d WHERE d.username = :username"),
-    @NamedQuery(name = "DBUsers.findByPassword", query = "SELECT d FROM DBUsers d WHERE d.password = :password"),
-    @NamedQuery(name = "DBUsers.findByIsAdmin", query = "SELECT d FROM DBUsers d WHERE d.isAdmin = :isAdmin"),
-    @NamedQuery(name = "DBUsers.findByGamesPlayed", query = "SELECT d FROM DBUsers d WHERE d.gamesPlayed = :gamesPlayed"),
-    @NamedQuery(name = "DBUsers.findByGamesWon", query = "SELECT d FROM DBUsers d WHERE d.gamesWon = :gamesWon"),
-    @NamedQuery(name = "DBUsers.findByRoundsPlayed", query = "SELECT d FROM DBUsers d WHERE d.roundsPlayed = :roundsPlayed"),
-    @NamedQuery(name = "DBUsers.findByThumbCount", query = "SELECT d FROM DBUsers d WHERE d.thumbCount = :thumbCount"),
-    @NamedQuery(name = "DBUsers.findByIndexCount", query = "SELECT d FROM DBUsers d WHERE d.indexCount = :indexCount"),
-    @NamedQuery(name = "DBUsers.findByMiddleCount", query = "SELECT d FROM DBUsers d WHERE d.middleCount = :middleCount"),
-    @NamedQuery(name = "DBUsers.findByRingCount", query = "SELECT d FROM DBUsers d WHERE d.ringCount = :ringCount"),
-    @NamedQuery(name = "DBUsers.findByPinkieCount", query = "SELECT d FROM DBUsers d WHERE d.pinkieCount = :pinkieCount"),
-    @NamedQuery(name = "DBUsers.findByRoundPercentSum", query = "SELECT d FROM DBUsers d WHERE d.roundPercentSum = :roundPercentSum")})
+    @NamedQuery(name = "UserEntity.findAll", query = "SELECT u FROM UserEntity u"),
+    @NamedQuery(name = "UserEntity.findByUsername", query = "SELECT u FROM UserEntity u WHERE u.username = :username"),
+    @NamedQuery(name = "UserEntity.findByPassword", query = "SELECT u FROM UserEntity u WHERE u.password = :password"),
+    @NamedQuery(name = "UserEntity.findByIsAdmin", query = "SELECT u FROM UserEntity u WHERE u.isAdmin = :isAdmin"),
+    @NamedQuery(name = "UserEntity.findByGamesPlayed", query = "SELECT u FROM UserEntity u WHERE u.gamesPlayed = :gamesPlayed"),
+    @NamedQuery(name = "UserEntity.findByGamesWon", query = "SELECT u FROM UserEntity u WHERE u.gamesWon = :gamesWon"),
+    @NamedQuery(name = "UserEntity.findByRoundsPlayed", query = "SELECT u FROM UserEntity u WHERE u.roundsPlayed = :roundsPlayed"),
+    @NamedQuery(name = "UserEntity.findByThumbCount", query = "SELECT u FROM UserEntity u WHERE u.thumbCount = :thumbCount"),
+    @NamedQuery(name = "UserEntity.findByIndexCount", query = "SELECT u FROM UserEntity u WHERE u.indexCount = :indexCount"),
+    @NamedQuery(name = "UserEntity.findByMiddleCount", query = "SELECT u FROM UserEntity u WHERE u.middleCount = :middleCount"),
+    @NamedQuery(name = "UserEntity.findByRingCount", query = "SELECT u FROM UserEntity u WHERE u.ringCount = :ringCount"),
+    @NamedQuery(name = "UserEntity.findByPinkieCount", query = "SELECT u FROM UserEntity u WHERE u.pinkieCount = :pinkieCount"),
+    @NamedQuery(name = "UserEntity.findByRoundPercentSum", query = "SELECT u FROM UserEntity u WHERE u.roundPercentSum = :roundPercentSum")})
 public class UserEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -77,6 +77,11 @@ public class UserEntity implements Serializable {
         this.username = username;
         this.password = password;
         this.isAdmin = isAdmin;
+        gamesPlayed = 0;
+        gamesWon = 0;
+        roundsPlayed = 0;
+        roundPercentSum = new BigDecimal(0);
+        setFingerCounts(0, 0, 0, 0, 0);
     }
 
     public String getUsername() {
@@ -125,6 +130,14 @@ public class UserEntity implements Serializable {
 
     public void setRoundsPlayed(Integer roundsPlayed) {
         this.roundsPlayed = roundsPlayed;
+    }
+
+    public void setFingerCounts(Integer thumb, Integer index, Integer middle, Integer ring, Integer pinkie) {
+        thumbCount = thumb;
+        indexCount = index;
+        middleCount = index;
+        ringCount = ring;
+        pinkieCount = pinkie;
     }
 
     public Integer getThumbCount() {
@@ -197,7 +210,7 @@ public class UserEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "turtle.DBUsers[username=" + username + "]";
+        return "turtle.UserEntity[username=" + username + "]";
     }
 
 }
