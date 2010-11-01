@@ -38,5 +38,4 @@ public interface UserManagementRemote {
     void deleteUser(String username) throws Exception;
 
     void resetUserPassword(String username) throws Exception;
-    
 }
