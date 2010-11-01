@@ -19,7 +19,7 @@ public interface UserManagementRemote {
 
     void createNewUser(String username, String password) throws Exception;
 
-    List<String> getConnectedPlayers();
+    List<String> getConnectedPlayers() throws Exception;
 
     UserRecord getUserRecord(String username) throws Exception;
 
@@ -27,13 +27,13 @@ public interface UserManagementRemote {
 
     void joinGame() throws Exception;
 
-    void leaveGame();
+    void leaveGame() throws Exception;
 
-    void setServerLock(boolean enable);
+    void setServerLock(boolean enable) throws Exception;
 
     void promoteUser(String username) throws Exception;
 
-    void kickPlayer(String username);
+    void kickPlayer(String username) throws Exception;
 
     void deleteUser(String username) throws Exception;
 
