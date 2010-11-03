@@ -13,5 +13,13 @@ import javax.ejb.Local;
  */
 @Local
 public interface TurtleLogicLocal {
+
+    void joinGame(String username) throws Exception;
+
+    void setServerLock(boolean enable);
+
+    void playTurn(String username, Finger finger) throws Exception;
+
+    GameState getGameState() throws Exception;
     
 }
