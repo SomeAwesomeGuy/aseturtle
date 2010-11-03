@@ -66,11 +66,22 @@ public class UserManagement implements UserManagementRemote {
         em.persist(user);
     }
 
-    // TODO: poll()
+    @Override
+    public GameState poll() throws Exception {
+        if(!isLoggedIn) {
+            throw new UserNotLoggedInException();
+        }
+
+        return null;
+    }
 
     @Override
     public List<String> getConnectedPlayers() throws Exception {
-        return null;
+        if(!isLoggedIn) {
+            throw new UserNotLoggedInException();
+        }
+
+        return turtleLogic.getConnectedPlayers();
     }
 
     /**
@@ -124,6 +135,7 @@ public class UserManagement implements UserManagementRemote {
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
+        // TODO: record in database
     }
 
     @Override
@@ -170,6 +182,11 @@ public class UserManagement implements UserManagementRemote {
         em.merge(player);
     }
 
+    /**
+     * Kicks a player out of a game
+     * @param username      the username of the player
+     * @throws Exception
+     */
     @Override
     public void kickPlayer(String username) throws Exception {
         if(!isLoggedIn) {
@@ -178,6 +195,8 @@ public class UserManagement implements UserManagementRemote {
         if(!isAdmin) {
             throw new InsufficientPrivilegeException();
         }
+
+        turtleLogic.kickPlayer(username);
     }
 
     /**
@@ -216,6 +235,19 @@ public class UserManagement implements UserManagementRemote {
         UserEntity player = checkUsername(username);
         player.setPassword(DEFAULT_PASSWORD);
         em.merge(player);
+    }
+
+    /**
+     * Checks if the server is locked
+     * @return              true if the server is locked
+     * @throws Exception
+     */
+    @Override
+    public boolean isLocked() throws Exception {
+        if(!isLoggedIn) {
+            throw new UserNotLoggedInException();
+        }
+        return turtleLogic.isLocked();
     }
 
     /**

@@ -40,4 +40,8 @@ public interface UserManagementRemote {
     void resetUserPassword(String username) throws Exception;
 
     void playTurn(Finger finger) throws Exception;
+
+    boolean isLocked() throws Exception;
+
+    GameState poll() throws Exception;
 }
