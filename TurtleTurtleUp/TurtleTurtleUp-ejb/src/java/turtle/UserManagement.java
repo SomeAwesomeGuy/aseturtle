@@ -6,6 +6,7 @@
 package turtle;
 
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -17,6 +18,9 @@ import javax.persistence.PersistenceContext;
 @Stateful
 public class UserManagement implements UserManagementRemote {
     private static final String DEFAULT_PASSWORD = "default";
+
+    @EJB
+    private TurtleLogicLocal turtleLogic;
 
     @PersistenceContext(unitName = "TurtleTurtleUp-ejbPU")
     private EntityManager em;
@@ -116,12 +120,24 @@ public class UserManagement implements UserManagementRemote {
     }
 
     @Override
+    public void playTurn(Finger finger) throws Exception {
+        if(!isLoggedIn) {
+            throw new UserNotLoggedInException();
+        }
+    }
+
+    @Override
     public void leaveGame() throws Exception {
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
     }
 
+    /**
+     * Sets the server lock, which prevents clients from playing and joining the game
+     * @param enable        true to enable server lock
+     * @throws Exception
+     */
     @Override
     public void setServerLock(boolean enable) throws Exception {
         if(!isLoggedIn) {
@@ -130,6 +146,8 @@ public class UserManagement implements UserManagementRemote {
         if(!isAdmin) {
             throw new InsufficientPrivilegeException();
         }
+
+        turtleLogic.setServerLock(enable);
     }
 
     /**
