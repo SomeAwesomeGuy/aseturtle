@@ -16,11 +16,18 @@ import java.util.Map;
  * @author Sean
  */
 public class GameState implements Serializable {
+    enum Status {
+        WAITING, NEW, OLD, WINNER
+    }
+
     private int roundNumber;
     private int timeLeft;
     private String oldLeader, currLeader;
     private List<String> oldPlayers, eliminated;
     private Map<String,Finger> fingerMap;
+    private Status status;
+
+
 
     public GameState() {
         oldPlayers = new ArrayList<String>();
@@ -35,6 +42,11 @@ public class GameState implements Serializable {
 
     public void setOldLeader(String oldLeader) {
         this.oldLeader = oldLeader;
+    }
+
+    public void updateLeader(String currLeader) {
+        oldLeader = this.currLeader;
+        this.currLeader = currLeader;
     }
 
     public void setRoundNumber(int roundNumber) {
@@ -59,6 +71,14 @@ public class GameState implements Serializable {
         for(Player player : players) {
             eliminated.add(player.getUsername());
         }
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public String getCurrLeader() {

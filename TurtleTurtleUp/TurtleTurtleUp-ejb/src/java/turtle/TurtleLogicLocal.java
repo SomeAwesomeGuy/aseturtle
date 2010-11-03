@@ -5,6 +5,7 @@
 
 package turtle;
 
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -21,5 +22,13 @@ public interface TurtleLogicLocal {
     void playTurn(String username, Finger finger) throws Exception;
 
     GameState getGameState() throws Exception;
+
+    void kickPlayer(String username) throws Exception;
+
+    void leaveGame(String username) throws Exception;
+
+    List<String> getConnectedPlayers();
+
+    boolean isLocked();
     
 }

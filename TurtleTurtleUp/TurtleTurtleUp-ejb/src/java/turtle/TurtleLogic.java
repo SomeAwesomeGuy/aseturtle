@@ -30,7 +30,7 @@ public class TurtleLogic implements TurtleLogicLocal {
 
     private Timer timer;
 
-    private GameState gameState;
+    private GameState state;
 
     private Player roundLeader;
     private int roundNumber;
@@ -44,34 +44,51 @@ public class TurtleLogic implements TurtleLogicLocal {
         eliminated = new ArrayList<Player>();
         waitingList = new ArrayList<Player>();
 
-        gameState = new GameState();
+        state = new GameState();
         timer = new Timer();
 
         isLocked = true;
+
+        roundNumber = 0;
+        roundTime = 0;
 
         timer.scheduleAtFixedRate(new GameClock(), 0, CLOCK_INTERVAL);
     }
 
     class GameClock extends TimerTask {
+        @Override
         public void run() {
+            if(isLocked) {
+                return;
+            }
             if(roundTime > 0) {
+                // Still time left on the clock
                 roundTime--;
-                gameState.setTimeLeft(roundTime);
+                state.setStatus(GameState.Status.OLD);
+                state.setTimeLeft(roundTime);
             }
             else {
+                // Time's up
                 if(players.isEmpty()) {
+                    // No players in the game
                     if(waitingList.size() > 1) {
+                        // Start the game if 2 or more players waiting to play
                         restartGame();
                     }
                     else {
+                        // Check again later
                         roundTime = ROUND_LENGTH;
-                        gameState.setRoundNumber(0);
+                        roundNumber = 0;
+                        state.setRoundNumber(roundNumber);
+                        state.setTimeLeft(roundTime);
+                        state.setStatus(GameState.Status.WAITING);
                     }
                 }
                 else {
+                    state.setOldPlayers(players);
                     Finger lead = roundLeader.getFinger();
                     if(lead == null) {
-                    // Leader has not submitted finger
+                        // Leader has not submitted finger
                         int index = players.indexOf(roundLeader) + 1;
                         Player nextLeader = index == players.size() ? players.get(0) : players.get(index);
                         players.remove(roundLeader);
@@ -81,24 +98,21 @@ public class TurtleLogic implements TurtleLogicLocal {
                     }
                     else {
                         for(Player user : players) {
-                            if(user.equals(lead)) {
+                            if(user.equals(roundLeader)) {
                                 continue;
                             }
                             Finger finger = user.getFinger();
-                            if(finger == null) {
+                            if(finger == null || finger == lead) {
                                 // User has not submitted finger
                                 players.remove(user);
                                 eliminated.add(user);
                                 waitingList.add(user);
                             }
-                            else if(finger == lead) {
-                                // TODO: Record finger in gamestate
-                                players.remove(user);
-                                eliminated.add(user);
-                                waitingList.add(user);
-                            }
                         }
+                        int index = players.indexOf(roundLeader) + 1;
+                        roundLeader = index == players.size() ? players.get(0) : players.get(index);
                     }
+                    nextRound();
                 }
             }
         }
@@ -116,21 +130,40 @@ public class TurtleLogic implements TurtleLogicLocal {
         roundNumber = 1;
         roundTime = ROUND_LENGTH;
 
-        gameState.setRoundNumber(roundNumber);
-        gameState.setTimeLeft(roundTime);
-        gameState.setOldPlayers(players);
-        gameState.setEliminated(eliminated);
-        gameState.setCurrLeader(roundLeader.getUsername());
-        gameState.setOldLeader("");
+        state.setRoundNumber(roundNumber);
+        state.setTimeLeft(roundTime);
+        state.setOldPlayers(players);
+        state.setEliminated(eliminated);
+        state.setCurrLeader(roundLeader.getUsername());
+        state.setOldLeader("");
+        state.setStatus(GameState.Status.NEW);
+        System.out.println("SERVER: Starting new game");
+        System.out.println("SERVER: Round 1");
     }
 
     private void nextRound() {
-        // TODO: update gamestate
+        if(players.size() == 1) {
+            state.setStatus(GameState.Status.WINNER);
+            players.clear();
+            waitingList.add(roundLeader);
+        }
+        else {
+            state.setStatus(GameState.Status.NEW);
+            roundNumber++;
+            state.setRoundNumber(roundNumber);
+        }
+        
+        roundTime = ROUND_LENGTH;
+        state.setTimeLeft(roundTime);
+        state.updateLeader(roundLeader.getUsername());
+        state.setEliminated(eliminated);
+
         eliminated.clear();
-        roundNumber++;
+        
         for(Player user : players) {
             user.setFinger(null);
         }
+        System.out.println("SERVER: Round " + roundNumber);
     }
 
     /**
@@ -138,6 +171,7 @@ public class TurtleLogic implements TurtleLogicLocal {
      * @param username      the username of the player
      * @throws Exception
      */
+    @Override
     public void joinGame(String username) throws Exception {
         if(isLocked) {
             throw new ServerLockException();
@@ -149,8 +183,19 @@ public class TurtleLogic implements TurtleLogicLocal {
         waitingList.add(user);
     }
 
+    @Override
+    public void leaveGame(String username) throws Exception {
+        Player user = userMap.get(username);
+
+        if(user == null) {
+            throw new Exception("ERROR: User is not playing in this game");
+        }
+
+        players.remove(user);
+        waitingList.remove(user);
+    }
     
-    
+    @Override
     public void setServerLock(boolean enable) {
         isLocked = enable;
 
@@ -158,32 +203,67 @@ public class TurtleLogic implements TurtleLogicLocal {
             userMap.clear();
             players.clear();
             waitingList.clear();
-
-            // TODO: If true, kick people out of the game
+            roundNumber = 0;
+            roundTime = 0;
+            state = new GameState();
         }
     }
 
+    @Override
     public void playTurn(String username, Finger finger) throws Exception {
         if(isLocked) {
             throw new ServerLockException();
         }
 
         Player user = userMap.get(username);
-        if(!user.isIsInGame()) {
+
+        if(user == null || !user.isIsInGame()) {
             throw new Exception("ERROR: User can not play in this game. Please wait for the next game.");
         }
 
         user.setFinger(finger);
     }
 
+    @Override
     public GameState getGameState() throws Exception {
         if(isLocked) {
             throw new ServerLockException();
         }
 
-        return null;
+        return state;
     }
 
-    
- 
+    @Override
+    public void kickPlayer(String username) throws Exception {
+        if(isLocked) {
+            throw new ServerLockException();
+        }
+
+        Player user = userMap.get(username);
+
+        if(user == null) {
+            throw new Exception("ERROR: User is not playing in this game");
+        }
+
+        players.remove(user);
+        waitingList.remove(user);
+    }
+
+    @Override
+    public List<String> getConnectedPlayers() {
+        List<String> list = new ArrayList<String>();
+        for(Player p : players) {
+            list.add(p.getUsername());
+        }
+        for(Player p : waitingList) {
+            list.add(p.getUsername());
+        }
+        Collections.sort(list);
+        return list;
+    }
+
+    @Override
+    public boolean isLocked() {
+        return isLocked;
+    }
 }
