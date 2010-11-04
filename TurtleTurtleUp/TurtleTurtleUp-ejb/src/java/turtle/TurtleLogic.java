@@ -13,11 +13,15 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  *
  * @author Sean
  */
+@Startup
 @Singleton
 public class TurtleLogic implements TurtleLogicLocal {
     private static final int CLOCK_INTERVAL = 1000;
@@ -38,6 +42,9 @@ public class TurtleLogic implements TurtleLogicLocal {
 
     private boolean isLocked;
     
+    @PersistenceContext(unitName = "TurtleTurtleUp-ejbPU")
+    private EntityManager em;
+    
     public TurtleLogic() {
         userMap = new HashMap<String,Player>();
         players = new ArrayList<Player>();
@@ -53,6 +60,7 @@ public class TurtleLogic implements TurtleLogicLocal {
         roundTime = 0;
 
         timer.scheduleAtFixedRate(new GameClock(), 0, CLOCK_INTERVAL);
+        System.out.println("SERVER: TurtleLogic initialized");
     }
 
     class GameClock extends TimerTask {
@@ -63,6 +71,7 @@ public class TurtleLogic implements TurtleLogicLocal {
             }
             if(roundTime > 0) {
                 // Still time left on the clock
+                System.out.println("SERVER: Time remaining: " + roundTime);
                 roundTime--;
                 state.setStatus(GameState.Status.OLD);
                 state.setTimeLeft(roundTime);
@@ -82,6 +91,7 @@ public class TurtleLogic implements TurtleLogicLocal {
                         state.setRoundNumber(roundNumber);
                         state.setTimeLeft(roundTime);
                         state.setStatus(GameState.Status.WAITING);
+                        System.out.println("SERVER: Not enough players waiting. Checking again in...");
                     }
                 }
                 else {
@@ -95,15 +105,19 @@ public class TurtleLogic implements TurtleLogicLocal {
                         eliminated.add(roundLeader);
                         waitingList.add(roundLeader);
                         roundLeader = nextLeader;
+                        for(Player user : players) {
+                            Finger finger = user.getFinger();
+                            recordFinger(user.getUsername(), finger);
+                        }
                     }
                     else {
                         for(Player user : players) {
+                            Finger finger = user.getFinger();
+                            recordFinger(user.getUsername(), finger);
                             if(user.equals(roundLeader)) {
                                 continue;
                             }
-                            Finger finger = user.getFinger();
                             if(finger == null || finger == lead) {
-                                // User has not submitted finger
                                 players.remove(user);
                                 eliminated.add(user);
                                 waitingList.add(user);
@@ -118,12 +132,50 @@ public class TurtleLogic implements TurtleLogicLocal {
         }
     }
 
+    private void recordFinger(String username, Finger f) {
+        if(f != null) {
+            UserEntity user = em.find(UserEntity.class, username);
+            switch(f) {
+                case THUMB:
+                    user.setThumbCount(user.getThumbCount() + 1);
+                    break;
+                case INDEX:
+                    user.setIndexCount(user.getThumbCount() + 1);
+                    break;
+                case MIDDLE:
+                    user.setMiddleCount(user.getThumbCount() + 1);
+                    break;
+                case RING:
+                    user.setRingCount(user.getThumbCount() + 1);
+                    break;
+                case PINKIE:
+                    user.setPinkieCount(user.getThumbCount() + 1);
+                    break;
+            }
+            user.setRoundsPlayed(user.getRoundsPlayed() + 1);
+            em.merge(user);
+        }
+    }
+
+    private void recordGame(String username) {
+        UserEntity user = em.find(UserEntity.class, username);
+        user.setGamesPlayed(user.getGamesPlayed() + 1);
+        em.merge(user);
+    }
+
+    private void recordWin(String username) {
+        UserEntity user = em.find(UserEntity.class, username);
+        user.setGamesWon(user.getGamesWon() + 1);
+        em.merge(user);
+    }
+
     private void restartGame() {
         players.addAll(waitingList);
         waitingList.clear();
         eliminated.clear();
         for(Player user : players) {
             user.setFinger(null);
+            recordGame(user.getUsername());
         }
         Collections.shuffle(players);
         roundLeader = players.get(0);
@@ -146,6 +198,7 @@ public class TurtleLogic implements TurtleLogicLocal {
             state.setStatus(GameState.Status.WINNER);
             players.clear();
             waitingList.add(roundLeader);
+            recordWin(roundLeader.getUsername());
         }
         else {
             state.setStatus(GameState.Status.NEW);
@@ -265,5 +318,9 @@ public class TurtleLogic implements TurtleLogicLocal {
     @Override
     public boolean isLocked() {
         return isLocked;
+    }
+
+    public void persist(Object object) {
+        em.persist(object);
     }
 }

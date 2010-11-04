@@ -72,7 +72,7 @@ public class UserManagement implements UserManagementRemote {
             throw new UserNotLoggedInException();
         }
 
-        return null;
+        return turtleLogic.getGameState();
     }
 
     @Override
@@ -128,6 +128,8 @@ public class UserManagement implements UserManagementRemote {
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
+
+        turtleLogic.joinGame(username);
     }
 
     @Override
@@ -135,7 +137,8 @@ public class UserManagement implements UserManagementRemote {
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
-        // TODO: record in database
+
+        turtleLogic.playTurn(username, finger);
     }
 
     @Override
@@ -143,6 +146,8 @@ public class UserManagement implements UserManagementRemote {
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
+
+        turtleLogic.leaveGame(username);
     }
 
     /**

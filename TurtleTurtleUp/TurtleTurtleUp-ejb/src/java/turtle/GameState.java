@@ -16,7 +16,7 @@ import java.util.Map;
  * @author Sean
  */
 public class GameState implements Serializable {
-    enum Status {
+    public enum Status {
         WAITING, NEW, OLD, WINNER
     }
 
@@ -26,8 +26,6 @@ public class GameState implements Serializable {
     private List<String> oldPlayers, eliminated;
     private Map<String,Finger> fingerMap;
     private Status status;
-
-
 
     public GameState() {
         oldPlayers = new ArrayList<String>();
