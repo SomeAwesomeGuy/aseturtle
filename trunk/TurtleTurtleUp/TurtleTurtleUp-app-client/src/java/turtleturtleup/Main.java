@@ -5,28 +5,39 @@
 
 package turtleturtleup;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Properties;
-import javax.ejb.EJB;
 import javax.naming.InitialContext;
-import turtle.InvalidPasswordException;
-import turtle.InvalidUsernameException;
-import turtle.UserManagementRemote;
+import javax.swing.JButton;
+
+import turtle.*;
 
 
 /**
  *
- * @author Sean
+ * @author blinnc
  */
 public class Main {
-    
+
+    static final int NUMBER_OF_FINGERS = 5;
+    static final Font NORMAL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 11);
+    static final Font BOLD_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 11);
+
     private static UserManagementRemote userManagement;
-    private static boolean loginWait = true;
+    private static boolean run = true;
     private static final NewAccountFrame naf = new NewAccountFrame();
     private final static LoginFrame start = new LoginFrame();
     private final static TurtleFrame gui = new TurtleFrame();
+
+    private static String userName;
     private static boolean isAdmin;
+    private static boolean isStatPageOpen;
+
+    private static JButton[] fingerButtons = new JButton[NUMBER_OF_FINGERS];
+    private static int fingerPress = -1;
 
     /**
      * @param args the command line arguments
@@ -50,20 +61,23 @@ public class Main {
         InitialContext ic = new InitialContext(props);
         userManagement = (UserManagementRemote) ic.lookup("turtle.UserManagementRemote");
 
+        start.infoLabel.setFont(NORMAL_FONT);
+        naf.infoLabel.setFont(NORMAL_FONT);
         start.loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 // TODO: check string for a-zA-z0-9
-                String userName = start.userField.getText();
+                String uid = start.userField.getText();
                 String password = "";
                 for (int i = 0; i < start.passField.getPassword().length; i++) {
                     password += start.passField.getPassword()[i];
                 }
 
                 try {
-                    isAdmin = userManagement.login(userName, password);
+                    isAdmin = userManagement.login(uid, password);
+                    userName = uid;
                     start.setVisible(false);
-                    gui.setVisible(true);
+                    game();
                 } catch (InvalidUsernameException e) {
                     start.infoLabel.setText("Invalid Username");
                     start.userField.setText("");
@@ -79,17 +93,88 @@ public class Main {
             }
         });
         start.signUpButton.addActionListener(new ActionListener() {
-           @Override
-           public void actionPerformed(ActionEvent arg0) {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
                 newAccount();
-           }
+            }
         });
-
-        System.out.println(System.getProperty("user.dir"));
 
         start.setVisible(true);
 
-        while(loginWait);
+        while(run);
+    }
+
+    private static void game() {
+        gui.setVisible(true);
+        gui.adminButton.setVisible(isAdmin);
+
+        fingerButtons[0] = gui.thumbButton;
+        fingerButtons[1] = gui.indexButton;
+        fingerButtons[2] = gui.middleButton;
+        fingerButtons[3] = gui.ringButton;
+        fingerButtons[4] = gui.pinkyButton;
+        resetButtons();
+
+        gui.statButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                stats();
+            }
+        });
+
+        gui.joinButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                join();
+            }
+        });
+
+        gui.spectateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                spectate();
+            }
+        });
+
+        gui.exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                System.exit(1);
+            }
+        });
+
+        if (isAdmin) {
+            gui.adminButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    admin();
+                }
+            });
+        }
+
+        for (int i = 0; i < NUMBER_OF_FINGERS; i++) {
+            fingerButtons[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    resetButtons();
+                    for (int j = 0; j < NUMBER_OF_FINGERS; j++) {
+                        if (fingerButtons[j].equals(arg0.getSource())) {
+                            fingerPress = j;
+                        }   
+                    }
+                    fingerButtons[fingerPress].setFont(BOLD_FONT);
+                    fingerButtons[fingerPress].setForeground(Color.darkGray);
+                }
+            });
+        }
+    }
+
+    private static void resetButtons() {
+        fingerPress = -1;
+        for (int i = 0; i < NUMBER_OF_FINGERS; i++) {
+            fingerButtons[i].setFont(NORMAL_FONT);
+            fingerButtons[i].setForeground(Color.lightGray);
+        }
     }
 
     private static void newAccount() {
@@ -128,5 +213,21 @@ public class Main {
                 start.setVisible(true);
             }
         });
+    }
+
+    private static void stats() {
+
+    }
+
+    private static void spectate() {
+
+    }
+
+    private static void join() {
+
+    }
+
+    private static void admin() {
+
     }
 }
