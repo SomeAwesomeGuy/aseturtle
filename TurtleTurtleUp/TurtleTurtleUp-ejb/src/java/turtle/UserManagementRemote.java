@@ -15,7 +15,7 @@ import javax.ejb.Remote;
 @Remote
 public interface UserManagementRemote {
 
-    void login(String username, String password) throws Exception;
+    boolean login(String username, String password) throws Exception;
 
     void createNewUser(String username, String password) throws Exception;
 
