@@ -27,7 +27,7 @@ public interface UserManagementRemote {
 
     void joinGame() throws Exception;
 
-    void leaveGame() throws Exception;
+    void leaveGame();
 
     void setServerLock(boolean enable) throws Exception;
 
