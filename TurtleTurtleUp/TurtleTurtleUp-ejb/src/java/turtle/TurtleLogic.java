@@ -25,7 +25,7 @@ import javax.persistence.PersistenceContext;
 @Singleton
 public class TurtleLogic implements TurtleLogicLocal {
     private static final int CLOCK_INTERVAL = 1000;
-    private static final int ROUND_LENGTH = 10; // In seconds
+    private static final int ROUND_LENGTH = 12; // In seconds
     
     private Map<String,Player> userMap;
     private List<Player> players;
