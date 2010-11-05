@@ -230,10 +230,13 @@ public class TurtleLogic implements TurtleLogicLocal {
             throw new ServerLockException();
         }
         
-        Player user = new Player(username);
-        userMap.put(username, user);
-        
-        waitingList.add(user);
+        Player user = userMap.get(username);
+        if(user == null) {
+            user = new Player(username);
+            userMap.put(username, user);
+
+            waitingList.add(user);
+        }
     }
 
     @Override
