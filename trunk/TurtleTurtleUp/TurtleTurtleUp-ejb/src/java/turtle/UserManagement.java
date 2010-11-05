@@ -61,7 +61,7 @@ public class UserManagement implements UserManagementRemote {
         // TODO: username/password validation to prevent SQL injection?
         user = em.find(UserEntity.class, username);
         if(user != null) {
-            throw new Exception("ERROR: Username taken. Please choose a different username");
+            throw new InvalidUsernameException();
         }
 
         user = new UserEntity(username,password,false);
