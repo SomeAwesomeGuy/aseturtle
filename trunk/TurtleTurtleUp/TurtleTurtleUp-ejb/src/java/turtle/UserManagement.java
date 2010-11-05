@@ -30,13 +30,14 @@ public class UserManagement implements UserManagementRemote {
     private boolean isAdmin, isLoggedIn;
 
     /**
-     * Authenticates the client's username and password
-     * @param username      the client's username
-     * @param password      the client's password
-     * @throws Exception    if username or password are invalid
+     * Logs a user into the server
+     * @param username      The username of the player
+     * @param password      The password of the player
+     * @return              true if the player is an admin
+     * @throws Exception
      */
     @Override
-    public void login(String username, String password) throws Exception {
+    public boolean login(String username, String password) throws Exception {
         // TODO: username/password validation to prevent SQL injection?
         user = checkUsername(username);
         if(!user.getPassword().equals(password)) {
@@ -46,6 +47,7 @@ public class UserManagement implements UserManagementRemote {
         this.username = username;
         isAdmin = user.getIsAdmin();
         isLoggedIn = true;
+        return isAdmin;
     }
 
     /**
