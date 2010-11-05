@@ -25,7 +25,7 @@ public interface TurtleLogicLocal {
 
     void kickPlayer(String username) throws Exception;
 
-    void leaveGame(String username) throws Exception;
+    void leaveGame(String username);
 
     List<String> getConnectedPlayers();
 

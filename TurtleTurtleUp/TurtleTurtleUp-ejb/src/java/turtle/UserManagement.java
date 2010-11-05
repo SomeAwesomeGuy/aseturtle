@@ -144,12 +144,10 @@ public class UserManagement implements UserManagementRemote {
     }
 
     @Override
-    public void leaveGame() throws Exception {
-        if(!isLoggedIn) {
-            throw new UserNotLoggedInException();
+    public void leaveGame() {
+        if(isLoggedIn) {
+            turtleLogic.leaveGame(username);
         }
-
-        turtleLogic.leaveGame(username);
     }
 
     /**

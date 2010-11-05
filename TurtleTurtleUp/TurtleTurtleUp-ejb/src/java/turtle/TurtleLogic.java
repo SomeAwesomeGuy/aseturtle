@@ -237,15 +237,14 @@ public class TurtleLogic implements TurtleLogicLocal {
     }
 
     @Override
-    public void leaveGame(String username) throws Exception {
+    public void leaveGame(String username) {
         Player user = userMap.get(username);
 
-        if(user == null) {
-            throw new Exception("ERROR: User is not playing in this game");
+        if(user != null) {
+            players.remove(user);
+            waitingList.remove(user);
+            userMap.remove(username);
         }
-
-        players.remove(user);
-        waitingList.remove(user);
     }
     
     @Override
