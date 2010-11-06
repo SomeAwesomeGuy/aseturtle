@@ -11,24 +11,14 @@ package turtle;
  */
 public class Player {
     private String username;
-    private boolean isInGame;
     private Finger finger;
 
     public Player(String username) {
         this.username = username;
-        isInGame = false;
     }
 
     public String getUsername() {
         return username;
-    }
-
-    public boolean isIsInGame() {
-        return isInGame;
-    }
-
-    public void setIsInGame(boolean isInGame) {
-        this.isInGame = isInGame;
     }
 
     public Finger getFinger() {

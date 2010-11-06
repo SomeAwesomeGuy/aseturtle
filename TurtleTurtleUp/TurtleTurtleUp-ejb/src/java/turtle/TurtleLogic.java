@@ -271,12 +271,9 @@ public class TurtleLogic implements TurtleLogicLocal {
         }
 
         Player user = userMap.get(username);
-
-        if(user == null || !user.isIsInGame()) {
-            throw new Exception("ERROR: User can not play in this game. Please wait for the next game.");
+        if(user != null) {
+            user.setFinger(finger);
         }
-
-        user.setFinger(finger);
     }
 
     @Override
@@ -322,7 +319,12 @@ public class TurtleLogic implements TurtleLogicLocal {
         return isLocked;
     }
 
-    public void persist(Object object) {
-        em.persist(object);
+    @Override
+    public boolean isInGame(String username) {
+        Player user = userMap.get(username);
+        if(user == null) {
+            return false;
+        }
+        return players.contains(user);
     }
 }

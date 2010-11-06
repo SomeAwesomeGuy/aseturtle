@@ -44,4 +44,6 @@ public interface UserManagementRemote {
     boolean isLocked() throws Exception;
 
     GameState poll() throws Exception;
+
+    boolean isInGame() throws Exception;
 }
