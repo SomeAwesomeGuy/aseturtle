@@ -103,6 +103,7 @@ public class TurtleLogic implements TurtleLogicLocal {
                         int index = players.indexOf(roundLeader) + 1;
                         Player nextLeader = index == players.size() ? players.get(0) : players.get(index);
                         players.remove(roundLeader);
+                        userMap.remove(roundLeader.getUsername());
                         eliminated.add(roundLeader);
 //                        waitingList.add(roundLeader);
                         roundLeader = nextLeader;
@@ -128,6 +129,7 @@ public class TurtleLogic implements TurtleLogicLocal {
                             if(finger == null || finger == lead) {
                                 System.out.println("SERVER: " + user.getUsername() + " has been eliminated");
                                 players.remove(user);
+                                userMap.remove(user.getUsername());
                                 eliminated.add(user);
 //                                waitingList.add(user);
                             }
