@@ -276,4 +276,16 @@ public class UserManagement implements UserManagementRemote {
 
         return turtleLogic.isInGame(username);
     }
+
+    public List<String> getAllPlayers() throws Exception {
+        if(!isLoggedIn) {
+            throw new UserNotLoggedInException();
+        }
+
+        List<String> playerList = em.createNativeQuery("Select username from users", String.class).getResultList();
+
+        return playerList;
+    }
+
+
 }
