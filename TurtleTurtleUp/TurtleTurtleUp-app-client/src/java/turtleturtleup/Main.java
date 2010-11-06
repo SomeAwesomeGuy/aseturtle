@@ -336,15 +336,20 @@ public class Main {
             }
             if (userManagement.isInGame()) {
                 nextAction = "Pick a finger!";
+            } else if (gameState.getStatus() == GameState.Status.WAITING) {
+                nextAction = "Waiting for game to start...";
+            } else if (gameState.getStatus() == GameState.Status.WINNER) {
+                nextAction = "Game Over! " + l + " won!";
             } else if (gameState.getEliminated().contains(userName)) {
                 inGame = false;
                 nextAction = "You were eliminated!";
-            } else {
-                nextAction = "Waiting for game to start...";
-            }
+            } 
             gui.actionLabel.setText("<html>" + roundLeader + "<br>" +
                     timeRemaining + "<br>" +
                     nextAction + "</html>");
+
+
+            
         } catch (InterruptedException e) {
         } catch (Exception e) {
             System.err.println(e);
