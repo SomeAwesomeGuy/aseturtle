@@ -321,28 +321,26 @@ public class Main {
 
     private static void poll() {
         try {
-            Thread.sleep(200);
+            Thread.sleep(250);
             gameState = userManagement.poll();
-            if (gameState.getRoundNumber() != 0) {
-                String l = gameState.getCurrLeader();
-                System.err.println(l);
-                if (l.equals(userName)) {
-                    roundLeader = "Leader : You";
-                } else {
-                    roundLeader = "Leader : " + l;
-                }
-                timeRemaining = "Time left in round : " + gameState.getTimeLeft();
-                if (userManagement.isInGame()) {
-                    nextAction = "Pick a finger!";
-                } else if (inGame) {
-                    nextAction = "You were eliminated!";
-                } else {
-                    nextAction = "";
-                }
-                gui.actionLabel.setText("<html>" + roundLeader + "<br>" +
-                        timeRemaining + "<br>" +
-                        nextAction + "</html>");
+            String l = gameState.getCurrLeader();
+            roundLeader = "Leader: ";
+            if (l != null) {
+                roundLeader += "l";
             }
+            if (gameState.getTimeLeft() != 0) {
+                timeRemaining = "Time left in round : " + (gameState.getTimeLeft() - 1);
+            }
+            if (userManagement.isInGame()) {
+                nextAction = "Pick a finger!";
+            } else if (gameState.getEliminated().contains(userName)) {
+                nextAction = "You were eliminated!";
+            } else {
+                nextAction = "Waiting for game to start...";
+            }
+            gui.actionLabel.setText("<html>" + roundLeader + "<br>" +
+                    timeRemaining + "<br>" +
+                    nextAction + "</html>");
         } catch (InterruptedException e) {
         } catch (Exception e) {
             System.err.println(e);
