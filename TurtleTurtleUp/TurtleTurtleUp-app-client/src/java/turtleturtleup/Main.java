@@ -113,7 +113,9 @@ public class Main {
         start.setVisible(true);
 
         while(run) {
+            run = true;
             while (isPolling) {
+                run = true;
                 poll();
             }
         }
