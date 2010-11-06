@@ -235,7 +235,7 @@ public class TurtleLogic implements TurtleLogicLocal {
      * @throws Exception
      */
     @Override
-    public void joinGame(String username) throws Exception {
+    public synchronized void joinGame(String username) throws Exception {
         if(isLocked) {
             throw new ServerLockException();
         }
@@ -275,7 +275,7 @@ public class TurtleLogic implements TurtleLogicLocal {
     }
 
     @Override
-    public void playTurn(String username, Finger finger) throws Exception {
+    public synchronized void playTurn(String username, Finger finger) throws Exception {
         if(isLocked) {
             throw new ServerLockException();
         }
