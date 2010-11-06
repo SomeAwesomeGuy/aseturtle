@@ -69,7 +69,7 @@ public class TurtleLogic implements TurtleLogicLocal {
             }
             if(roundTime > 0) {
                 // Still time left on the clock
-                System.out.println("SERVER: Time remaining: " + roundTime);
+//                System.out.println("SERVER: Time remaining: " + roundTime);
                 roundTime--;
                 state.setStatus(GameState.Status.OLD);
                 state.setTimeLeft(roundTime);
@@ -96,6 +96,7 @@ public class TurtleLogic implements TurtleLogicLocal {
                     state.setOldPlayers(players);
                     Finger lead = roundLeader.getFinger();
                     if(lead == null) {
+                        System.out.println("SERVER: Leader has not picked a finger");
                         // Leader has not submitted finger
                         int index = players.indexOf(roundLeader) + 1;
                         Player nextLeader = index == players.size() ? players.get(0) : players.get(index);
@@ -109,13 +110,21 @@ public class TurtleLogic implements TurtleLogicLocal {
                         }
                     }
                     else {
+                        System.out.println("SERVER: Leader has picked " + lead);
                         for(Player user : players) {
                             Finger finger = user.getFinger();
                             recordFinger(user.getUsername(), finger);
                             if(user.equals(roundLeader)) {
                                 continue;
                             }
+                            if(finger == null) {
+                                System.out.println("SERVER: " + user.getUsername() + " has not picked a finger");
+                            }
+                            else {
+                                System.out.println("SERVER: " + user.getUsername() + " has picked " + finger);
+                            }
                             if(finger == null || finger == lead) {
+                                System.out.println("SERVER: " + user.getUsername() + " has been eliminated");
                                 players.remove(user);
                                 eliminated.add(user);
                                 waitingList.add(user);
@@ -187,8 +196,8 @@ public class TurtleLogic implements TurtleLogicLocal {
         state.setCurrLeader(roundLeader.getUsername());
         state.setOldLeader("");
         state.setStatus(GameState.Status.NEW);
-        System.out.println("SERVER: Starting new game");
-        System.out.println("SERVER: Round 1");
+        System.out.println("SERVER: Starting new game with " + players.size() + " players");
+        System.out.println("SERVER: Round 1 - leader: " + roundLeader.getUsername());
     }
 
     private void nextRound() {
@@ -214,7 +223,7 @@ public class TurtleLogic implements TurtleLogicLocal {
         for(Player user : players) {
             user.setFinger(null);
         }
-        System.out.println("SERVER: Round " + roundNumber);
+        System.out.println("\n\nSERVER: Round " + roundNumber + " - leader: " + roundLeader.getUsername());
     }
 
     /**
