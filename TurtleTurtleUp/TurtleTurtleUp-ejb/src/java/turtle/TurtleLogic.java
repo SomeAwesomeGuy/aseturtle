@@ -196,7 +196,7 @@ public class TurtleLogic implements TurtleLogicLocal {
             state.setStatus(GameState.Status.WINNER);
             players.clear();
             waitingList.add(roundLeader);
-            recordWin(roundLeader.getUsername());
+            //recordWin(roundLeader.getUsername());
         }
         else {
             state.setStatus(GameState.Status.NEW);
