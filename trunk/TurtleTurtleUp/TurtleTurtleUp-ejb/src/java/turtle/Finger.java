@@ -10,7 +10,7 @@ package turtle;
  * @author Sean
  */
 public enum Finger {
-    THUMB("thumb"), INDEX("index"), MIDDLE("middle"), RING("ring"), PINKIE("pinkie");
+    THUMB("thumb"), INDEX("index"), MIDDLE("middle"), RING("ring"), PINKIE("pinky");
 
     private final String name;
 

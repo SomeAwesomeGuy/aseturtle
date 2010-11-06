@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -20,7 +21,8 @@ import javax.persistence.PersistenceContext;
  *
  * @author Sean
  */
-@Stateless
+@Startup
+@Singleton
 public class TurtleLogic implements TurtleLogicLocal {
     private static final int CLOCK_INTERVAL = 1000;
     private static final int ROUND_LENGTH = 12; // In seconds
