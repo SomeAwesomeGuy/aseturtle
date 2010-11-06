@@ -213,6 +213,7 @@ public class TurtleLogic implements TurtleLogicLocal {
             System.out.println("SERVER: " + roundLeader.getUsername() + " wins!");
             state.setStatus(GameState.Status.WINNER);
             players.clear();
+            userMap.clear();
             //recordWin(roundLeader.getUsername());
         }
         else {
