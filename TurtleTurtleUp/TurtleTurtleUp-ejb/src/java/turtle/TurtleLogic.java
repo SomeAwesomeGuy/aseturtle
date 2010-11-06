@@ -331,6 +331,7 @@ public class TurtleLogic implements TurtleLogicLocal {
 
             em.merge(user);
         }
+        changeList.clear();
 
         return state;
     }
