@@ -173,7 +173,7 @@ public class TurtleLogic implements TurtleLogicLocal {
         eliminated.clear();
         for(Player user : players) {
             user.setFinger(null);
-            recordGame(user.getUsername());
+//            recordGame(user.getUsername());
         }
         Collections.shuffle(players);
         roundLeader = players.get(0);
