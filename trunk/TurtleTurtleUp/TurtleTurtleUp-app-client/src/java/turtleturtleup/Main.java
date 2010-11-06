@@ -326,7 +326,7 @@ public class Main {
             String l = gameState.getCurrLeader();
             roundLeader = "Leader: ";
             if (l != null) {
-                roundLeader += "l";
+                roundLeader += l;
             }
             if (gameState.getTimeLeft() != 0) {
                 timeRemaining = "Time left in round : " + (gameState.getTimeLeft() - 1);
