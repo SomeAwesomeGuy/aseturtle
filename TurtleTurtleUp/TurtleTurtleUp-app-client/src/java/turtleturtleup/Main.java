@@ -9,9 +9,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Properties;
 import javax.naming.InitialContext;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 
 import turtle.*;
 
@@ -31,10 +34,18 @@ public class Main {
     private static final NewAccountFrame naf = new NewAccountFrame();
     private final static LoginFrame start = new LoginFrame();
     private final static TurtleFrame gui = new TurtleFrame();
+    private final static AdminFrame agui = new AdminFrame();
 
     private static String userName;
+    private static GameState gameState = null;
     private static boolean isAdmin;
-    private static boolean isStatPageOpen;
+    private static boolean isAdminOpen = false;
+    private static boolean isStatPageOpen = false;
+    private static boolean inGame = false;
+    private static boolean isPolling = false;
+    private static String roundLeader = "";
+    private static String timeRemaining = "";
+    private static String nextAction = "";
 
     private static JButton[] fingerButtons = new JButton[NUMBER_OF_FINGERS];
     private static int fingerPress = -1;
@@ -86,7 +97,7 @@ public class Main {
                     start.infoLabel.setText("Incorrect Password");
                     start.passField.setText("");
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    System.err.println(e.toString());
                     System.exit(0);
                 }
 
@@ -101,11 +112,21 @@ public class Main {
 
         start.setVisible(true);
 
-        while(run);
+        while(run) {
+            while (isPolling) {
+                poll();
+            }
+        }
     }
 
     private static void game() {
         gui.setVisible(true);
+        gui.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                exit();
+            }
+        });
         gui.adminButton.setVisible(isAdmin);
 
         fingerButtons[0] = gui.thumbButton;
@@ -160,6 +181,24 @@ public class Main {
                     for (int j = 0; j < NUMBER_OF_FINGERS; j++) {
                         if (fingerButtons[j].equals(arg0.getSource())) {
                             fingerPress = j;
+                            if (inGame) {
+                                try {
+                                    if (j == 0) {
+                                        userManagement.playTurn(Finger.THUMB);
+                                    } else if (j == 1) {
+                                        userManagement.playTurn(Finger.INDEX);
+                                    } else if (j == 2) {
+                                        userManagement.playTurn(Finger.MIDDLE);
+                                    } else if (j == 3) {
+                                        userManagement.playTurn(Finger.RING);
+                                    } else if (j == 4) {
+                                        userManagement.playTurn(Finger.PINKIE);
+                                    }
+                                } catch (Exception e) {
+                                    System.err.println(e);
+                                    exit();
+                                }
+                            }
                         }   
                     }
                     fingerButtons[fingerPress].setFont(BOLD_FONT);
@@ -186,14 +225,14 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 // TODO: check string for a-zA-z0-9
-                String userName = naf.userField.getText();
+                String uid = naf.userField.getText();
                 String password = "";
                 for (int i = 0; i < naf.passField.getPassword().length; i++) {
                     password += naf.passField.getPassword()[i];
                 }
 
                 try {
-                    userManagement.createNewUser(userName, password);
+                    userManagement.createNewUser(uid, password);
                     naf.setVisible(false);
                     start.setVisible(true);
                 } catch (InvalidUsernameException e) {
@@ -220,14 +259,105 @@ public class Main {
     }
 
     private static void spectate() {
-
+        leaveGame();
+        isPolling = true;
     }
 
     private static void join() {
-
+        isPolling = true;
+        try {
+            userManagement.joinGame();
+        } catch (Exception e) {
+            System.err.println(e.toString());
+            e.printStackTrace();
+            exit();
+        }
     }
 
     private static void admin() {
+        if (!isAdminOpen) {
+            isAdminOpen = true;
+            agui.setVisible(true);
+            try {
+                agui.lockServerCheckBox.setSelected(userManagement.isLocked());
+            } catch (Exception e) {
+                System.err.print(e);
+                e.printStackTrace();
+                exit();
+            }
 
+            agui.okButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    try {
+                        userManagement.setServerLock(agui.lockServerCheckBox.isSelected());
+                    } catch (Exception e) {
+                        System.err.print(e);
+                        exit();
+                    }
+                    adminExit();
+                }
+            });
+            agui.cancelButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    adminExit();
+                }
+            });
+            agui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            agui.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    adminExit();
+                }
+            });
+        }
+    }
+
+    private static void adminExit() {
+        isAdminOpen = false;
+        agui.setVisible(false);
+    }
+
+    private static void poll() {
+        try {
+            Thread.sleep(200);
+            gameState = userManagement.poll();
+            if (gameState.getRoundNumber() != 0) {
+                String l = gameState.getCurrLeader();
+                System.err.println(l);
+                if (l.equals(userName)) {
+                    roundLeader = "Leader : You";
+                } else {
+                    roundLeader = "Leader : " + l;
+                }
+                timeRemaining = "Time left in round : " + gameState.getTimeLeft();
+                if (userManagement.isInGame()) {
+                    nextAction = "Pick a finger!";
+                } else if (inGame) {
+                    nextAction = "You were eliminated!";
+                } else {
+                    nextAction = "";
+                }
+                gui.actionLabel.setText("<html>" + roundLeader + "<br>" +
+                        timeRemaining + "<br>" +
+                        nextAction + "</html>");
+            }
+        } catch (InterruptedException e) {
+        } catch (Exception e) {
+            System.err.println(e);
+            e.printStackTrace();
+            exit();
+        }
+    }
+
+    private static void leaveGame() {
+        userManagement.leaveGame();
+        inGame = false;
+    }
+
+    private static void exit() {
+        leaveGame();
+        System.exit(0);
     }
 }
