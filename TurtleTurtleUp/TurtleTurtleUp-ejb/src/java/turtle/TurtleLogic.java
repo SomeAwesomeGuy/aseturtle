@@ -308,16 +308,16 @@ public class TurtleLogic implements TurtleLogicLocal {
                         user.setThumbCount(user.getThumbCount() + 1);
                         break;
                     case INDEX:
-                        user.setIndexCount(user.getThumbCount() + 1);
+                        user.setIndexCount(user.getIndexCount() + 1);
                         break;
                     case MIDDLE:
-                        user.setMiddleCount(user.getThumbCount() + 1);
+                        user.setMiddleCount(user.getMiddleCount() + 1);
                         break;
                     case RING:
-                        user.setRingCount(user.getThumbCount() + 1);
+                        user.setRingCount(user.getRingCount() + 1);
                         break;
                     case PINKIE:
-                        user.setPinkieCount(user.getThumbCount() + 1);
+                        user.setPinkieCount(user.getPinkieCount() + 1);
                         break;
                 }
                 user.setRoundsPlayed(user.getRoundsPlayed() + 1);
