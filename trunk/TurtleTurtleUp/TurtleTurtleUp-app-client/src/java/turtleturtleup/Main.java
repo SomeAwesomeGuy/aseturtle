@@ -113,8 +113,9 @@ public class Main {
         start.setVisible(true);
 
         while(run) {
-            run = true;
+            System.out.println("Running!");
             while (isPolling) {
+                System.out.println("Polling!");
                 run = true;
                 poll();
             }
@@ -336,12 +337,12 @@ public class Main {
             } else {
                 timeRemaining = "Time left in round : " + (gameState.getTimeLeft() - 1);
             }
-            if (userManagement.isInGame()) {
-                nextAction = "Pick a finger!";
-            } else if (gameState.getStatus() == GameState.Status.WAITING) {
+            if (gameState.getStatus() == GameState.Status.WAITING) {
                 nextAction = "Waiting for game to start...";
             } else if (gameState.getStatus() == GameState.Status.WINNER) {
                 nextAction = "Game Over! " + l + " won!";
+            } else if (userManagement.isInGame()) {
+                nextAction = "Pick a finger!";
             } else if (gameState.getEliminated().contains(userName)) {
                 inGame = false;
                 nextAction = "You were eliminated!";
@@ -350,7 +351,58 @@ public class Main {
                     timeRemaining + "<br>" +
                     nextAction + "</html>");
 
-
+            String infoHeader = "<html> <tr> <td><b>Player&nbsp&nbsp&nbsp</b></td>" +
+                    "<td><b>Thumb</td>" +
+                    "<td><b>Index</td>" +
+                    "<td><b>Middle</td>" +
+                    "<td><b>Ring</td>" +
+                    "<td><b>Pinky</td></tr>";
+            for (int i = 0; i < gameState.getOldPlayers().size(); i++) {
+                if(gameState.getFingerMap().get(gameState.getOldPlayers().get(i)) == null) {
+                    infoHeader += "<tr> <td>" + gameState.getOldPlayers().get(i) + "</td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td></tr> <tr>";
+                } else if(gameState.getFingerMap().get(gameState.getOldPlayers().get(i)) == Finger.THUMB) {
+                    infoHeader += "<tr> <td>" + gameState.getOldPlayers().get(i) + "</td>" +
+                            "<td><CENTER>x</CENTER></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td></tr> <tr>";
+                } else if(gameState.getFingerMap().get(gameState.getOldPlayers().get(i)) == Finger.INDEX) {
+                    infoHeader += "<tr> <td>" + gameState.getOldPlayers().get(i) + "</td>" +
+                            "<td></td>" +
+                            "<td><CENTER>x</CENTER></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td></tr> <tr>";
+                } else if(gameState.getFingerMap().get(gameState.getOldPlayers().get(i)) == Finger.MIDDLE) {
+                    infoHeader += "<tr> <td>" + gameState.getOldPlayers().get(i) + "</td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td><CENTER>x</CENTER></td>" +
+                            "<td></td>" +
+                            "<td></td></tr> <tr>";
+                } else if(gameState.getFingerMap().get(gameState.getOldPlayers().get(i)) == Finger.RING) {
+                    infoHeader += "<tr> <td>" + gameState.getOldPlayers().get(i) + "</td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td><CENTER>x</CENTER></td>" +
+                            "<td></td></tr> <tr>";
+                } else if(gameState.getFingerMap().get(gameState.getOldPlayers().get(i)) == Finger.PINKIE) {
+                    infoHeader += "<tr> <td>" + gameState.getOldPlayers().get(i) + "</td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td><CENTER>x</CENTER></td></tr> <tr>";
+                }
+            }
+            gui.infoLabel.setText(infoHeader);
             
         } catch (InterruptedException e) {
         } catch (Exception e) {
