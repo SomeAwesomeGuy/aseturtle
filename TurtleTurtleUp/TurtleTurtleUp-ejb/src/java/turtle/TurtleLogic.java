@@ -295,7 +295,7 @@ public class TurtleLogic implements TurtleLogicLocal {
     }
 
     @Override
-    public GameState getGameState() throws Exception {
+    public synchronized GameState getGameState() throws Exception {
         if(isLocked) {
             throw new ServerLockException();
         }

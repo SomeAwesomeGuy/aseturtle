@@ -21,11 +21,13 @@ public class DBChange {
     public DBChange(String username, Type type) {
         this.username = username;
         this.type = type;
+        System.out.println("SERVER: Recording change of type " + type);
     }
 
     public DBChange(String username, Type type, Finger finger) {
         this.username = username;
         this.type = type;
         this.finger = finger;
+        System.out.println("SERVER: Recording change of type " + type + " - " + finger);
     }
 }
