@@ -96,13 +96,13 @@ public class TurtleLogic implements TurtleLogicLocal {
                     state.setOldPlayers(players);
                     Finger lead = roundLeader.getFinger();
                     if(lead == null) {
-                        System.out.println("SERVER: Leader has not picked a finger");
+                        System.out.println("SERVER: Leader has not picked a finger and has been eliminated");
                         // Leader has not submitted finger
                         int index = players.indexOf(roundLeader) + 1;
                         Player nextLeader = index == players.size() ? players.get(0) : players.get(index);
                         players.remove(roundLeader);
                         eliminated.add(roundLeader);
-                        waitingList.add(roundLeader);
+//                        waitingList.add(roundLeader);
                         roundLeader = nextLeader;
                         for(Player user : players) {
                             Finger finger = user.getFinger();
@@ -127,7 +127,7 @@ public class TurtleLogic implements TurtleLogicLocal {
                                 System.out.println("SERVER: " + user.getUsername() + " has been eliminated");
                                 players.remove(user);
                                 eliminated.add(user);
-                                waitingList.add(user);
+//                                waitingList.add(user);
                             }
                         }
                         int index = players.indexOf(roundLeader) + 1;
@@ -196,15 +196,16 @@ public class TurtleLogic implements TurtleLogicLocal {
         state.setCurrLeader(roundLeader.getUsername());
         state.setOldLeader("");
         state.setStatus(GameState.Status.NEW);
-        System.out.println("SERVER: Starting new game with " + players.size() + " players");
+        System.out.println("\n\nSERVER: Starting new game with " + players.size() + " players");
         System.out.println("SERVER: Round 1 - leader: " + roundLeader.getUsername());
     }
 
     private void nextRound() {
         if(players.size() == 1) {
+            System.out.println("SERVER: " + roundLeader.getUsername() + " wins!");
             state.setStatus(GameState.Status.WINNER);
             players.clear();
-            waitingList.add(roundLeader);
+            //waitingList.add(roundLeader);
             //recordWin(roundLeader.getUsername());
         }
         else {
