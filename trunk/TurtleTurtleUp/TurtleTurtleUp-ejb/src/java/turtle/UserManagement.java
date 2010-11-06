@@ -269,7 +269,11 @@ public class UserManagement implements UserManagementRemote {
         return player;
     }
 
-    public void persist(Object object) {
-        em.persist(object);
+    public boolean isInGame() throws Exception {
+        if(!isLoggedIn) {
+            throw new UserNotLoggedInException();
+        }
+
+        return turtleLogic.isInGame(username);
     }
 }

@@ -30,5 +30,7 @@ public interface TurtleLogicLocal {
     List<String> getConnectedPlayers();
 
     boolean isLocked();
+
+    boolean isInGame(String username);
     
 }
