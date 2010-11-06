@@ -73,7 +73,7 @@ public class TurtleLogic implements TurtleLogicLocal {
                 // Still time left on the clock
 //                System.out.println("SERVER: Time remaining: " + roundTime);
                 roundTime--;
-                state.setStatus(GameState.Status.OLD);
+//                state.setStatus(GameState.Status.OLD);
                 state.setTimeLeft(roundTime);
             }
             else {
@@ -214,6 +214,7 @@ public class TurtleLogic implements TurtleLogicLocal {
             state.setStatus(GameState.Status.NEW);
             roundNumber++;
             state.setRoundNumber(roundNumber);
+            System.out.println("\n\nSERVER: Round " + roundNumber + " - leader: " + roundLeader.getUsername());
         }
         
         roundTime = ROUND_LENGTH;
@@ -226,7 +227,6 @@ public class TurtleLogic implements TurtleLogicLocal {
         for(Player user : players) {
             user.setFinger(null);
         }
-        System.out.println("\n\nSERVER: Round " + roundNumber + " - leader: " + roundLeader.getUsername());
     }
 
     /**
@@ -235,7 +235,7 @@ public class TurtleLogic implements TurtleLogicLocal {
      * @throws Exception
      */
     @Override
-    public synchronized void joinGame(String username) throws Exception {
+    public void joinGame(String username) throws Exception {
         if(isLocked) {
             throw new ServerLockException();
         }
