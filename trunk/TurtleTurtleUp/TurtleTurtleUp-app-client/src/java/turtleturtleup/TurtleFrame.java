@@ -155,8 +155,8 @@ public class TurtleFrame extends javax.swing.JFrame {
         infoLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jScrollPane1.setViewportView(infoLabel);
 
-        actionLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 18)); // NOI18N
-        actionLabel.setText("<html>You lost!<br>\nBetter luck next time\n</html>");
+        actionLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 16)); // NOI18N
+        actionLabel.setText("<html> You lost!<br>\nBetter luck next time\n</html>");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -195,8 +195,8 @@ public class TurtleFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(actionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
+                        .addComponent(actionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                         .addComponent(thumbButton, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -225,7 +225,7 @@ public class TurtleFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel actionLabel;
+    javax.swing.JLabel actionLabel;
     javax.swing.JButton adminButton;
     javax.swing.JButton exitButton;
     javax.swing.JButton indexButton;
