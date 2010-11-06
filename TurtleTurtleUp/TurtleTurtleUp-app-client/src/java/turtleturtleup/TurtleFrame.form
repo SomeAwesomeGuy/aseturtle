@@ -60,7 +60,7 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
+                          <Component id="jScrollPane1" min="-2" pref="277" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace min="-2" pref="196" max="-2" attributes="0"/>
@@ -73,7 +73,7 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="253" max="-2" attributes="0"/>
-                  <EmptySpace pref="51" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="actionLabel" min="-2" pref="119" max="-2" attributes="0"/>
@@ -298,7 +298,6 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="infoLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;tr&gt; &lt;td&gt;&lt;b&gt;Player&amp;nbsp&amp;nbsp&amp;nbsp&lt;/b&gt;&lt;/td&gt; &lt;td&gt;&lt;b&gt;Thumb&lt;/td&gt; &lt;td&gt;&lt;b&gt;Index&lt;/td&gt;&lt;td&gt;&lt;b&gt;Middle&lt;/td&gt;&lt;td&gt;&lt;b&gt;Ring&lt;/td&gt;&lt;td&gt;&lt;b&gt;Pinky&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt; &lt;td&gt;TEST&lt;/td&gt; &lt;td&gt;&lt;CENTER&gt;x&lt;/CENTER&gt;&lt;/td&gt; &lt;/tr&gt;&#xa;&lt;/html&gt;"/>
                 <Property name="verticalAlignment" type="int" value="1"/>
               </Properties>
               <AuxValues>
@@ -312,7 +311,6 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Comic Sans MS" size="16" style="0"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt; You lost!&lt;br&gt;&#xa;Better luck next time&#xa;&lt;/html&gt;"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>

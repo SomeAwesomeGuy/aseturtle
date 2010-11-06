@@ -151,12 +151,10 @@ public class TurtleFrame extends javax.swing.JFrame {
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jScrollPane1.setOpaque(false);
 
-        infoLabel.setText("<html>\n<tr> <td><b>Player&nbsp&nbsp&nbsp</b></td> <td><b>Thumb</td> <td><b>Index</td><td><b>Middle</td><td><b>Ring</td><td><b>Pinky</td></tr>\n<tr> <td>TEST</td> <td><CENTER>x</CENTER></td> </tr>\n</html>");
         infoLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jScrollPane1.setViewportView(infoLabel);
 
         actionLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 16)); // NOI18N
-        actionLabel.setText("<html> You lost!<br>\nBetter luck next time\n</html>");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -183,7 +181,7 @@ public class TurtleFrame extends javax.swing.JFrame {
                         .addComponent(pinkyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(196, 196, 196))
         );
         jPanel1Layout.setVerticalGroup(
@@ -192,7 +190,7 @@ public class TurtleFrame extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                .addGap(51, 51, 51)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(actionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
