@@ -102,10 +102,7 @@ public class TurtleLogic implements TurtleLogicLocal {
                         // Leader has not submitted finger
                         int index = players.indexOf(roundLeader) + 1;
                         Player nextLeader = index == players.size() ? players.get(0) : players.get(index);
-                        players.remove(roundLeader);
-                        userMap.remove(roundLeader.getUsername());
-                        eliminated.add(roundLeader);
-//                        waitingList.add(roundLeader);
+                        eliminate(roundLeader);
                         roundLeader = nextLeader;
                         for(Player user : players) {
                             Finger finger = user.getFinger();
@@ -128,10 +125,7 @@ public class TurtleLogic implements TurtleLogicLocal {
                             }
                             if(finger == null || finger == lead) {
                                 System.out.println("SERVER: " + user.getUsername() + " has been eliminated");
-                                players.remove(user);
-                                userMap.remove(user.getUsername());
-                                eliminated.add(user);
-//                                waitingList.add(user);
+                                eliminate(user);
                             }
                         }
                         int index = players.indexOf(roundLeader) + 1;
@@ -141,6 +135,14 @@ public class TurtleLogic implements TurtleLogicLocal {
                 }
             }
         }
+    }
+
+    private void eliminate(Player user) {
+        synchronized(this) {
+            players.remove(user);
+        }
+        userMap.remove(user.getUsername());
+        eliminated.add(user);
     }
 
     private void recordFinger(String username, Finger f) {
@@ -181,7 +183,9 @@ public class TurtleLogic implements TurtleLogicLocal {
     }
 
     private void restartGame() {
-        players.addAll(waitingList);
+        synchronized(this) {
+            players.addAll(waitingList);
+        }
         waitingList.clear();
         eliminated.clear();
         for(Player user : players) {
@@ -208,8 +212,9 @@ public class TurtleLogic implements TurtleLogicLocal {
         if(players.size() == 1) {
             System.out.println("SERVER: " + roundLeader.getUsername() + " wins!");
             state.setStatus(GameState.Status.WINNER);
-            players.clear();
-            //waitingList.add(roundLeader);
+            synchronized(this) {
+                players.clear();
+            }
             //recordWin(roundLeader.getUsername());
         }
         else {
@@ -256,7 +261,9 @@ public class TurtleLogic implements TurtleLogicLocal {
         Player user = userMap.get(username);
 
         if(user != null) {
-            players.remove(user);
+            synchronized(this) {
+                players.remove(user);
+            }
             waitingList.remove(user);
             userMap.remove(username);
         }
