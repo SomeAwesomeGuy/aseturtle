@@ -47,9 +47,9 @@ public class TurtleLogic implements TurtleLogicLocal {
     
     public TurtleLogic() {
         userMap = new HashMap<String,Player>();
-        players = new ArrayList<Player>();
-        eliminated = new ArrayList<Player>();
-        waitingList = new ArrayList<Player>();
+        players = Collections.synchronizedList(new ArrayList<Player>());
+        eliminated = Collections.synchronizedList(new ArrayList<Player>());
+        waitingList = Collections.synchronizedList(new ArrayList<Player>());
 
         state = new GameState();
         timer = new Timer();
@@ -138,9 +138,7 @@ public class TurtleLogic implements TurtleLogicLocal {
     }
 
     private void eliminate(Player user) {
-        synchronized(this) {
-            players.remove(user);
-        }
+        players.remove(user);
         userMap.remove(user.getUsername());
         eliminated.add(user);
     }
@@ -183,9 +181,7 @@ public class TurtleLogic implements TurtleLogicLocal {
     }
 
     private void restartGame() {
-        synchronized(this) {
-            players.addAll(waitingList);
-        }
+        players.addAll(waitingList);
         waitingList.clear();
         eliminated.clear();
         for(Player user : players) {
@@ -212,9 +208,7 @@ public class TurtleLogic implements TurtleLogicLocal {
         if(players.size() == 1) {
             System.out.println("SERVER: " + roundLeader.getUsername() + " wins!");
             state.setStatus(GameState.Status.WINNER);
-            synchronized(this) {
-                players.clear();
-            }
+            players.clear();
             //recordWin(roundLeader.getUsername());
         }
         else {
@@ -261,9 +255,7 @@ public class TurtleLogic implements TurtleLogicLocal {
         Player user = userMap.get(username);
 
         if(user != null) {
-            synchronized(this) {
-                players.remove(user);
-            }
+            players.remove(user);
             waitingList.remove(user);
             userMap.remove(username);
         }
