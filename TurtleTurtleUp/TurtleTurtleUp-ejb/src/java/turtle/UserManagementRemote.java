@@ -46,4 +46,6 @@ public interface UserManagementRemote {
     GameState poll() throws Exception;
 
     boolean isInGame() throws Exception;
+
+    List<String> getAllPlayers() throws Exception;
 }
