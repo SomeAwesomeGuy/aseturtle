@@ -106,14 +106,14 @@ public class TurtleLogic implements TurtleLogicLocal {
                         roundLeader = nextLeader;
                         for(Player user : players) {
                             Finger finger = user.getFinger();
-                            recordFinger(user.getUsername(), finger);
+//                            recordFinger(user.getUsername(), finger);
                         }
                     }
                     else {
                         System.out.println("SERVER: Leader has picked " + lead);
                         for(Player user : players) {
                             Finger finger = user.getFinger();
-                            recordFinger(user.getUsername(), finger);
+//                            recordFinger(user.getUsername(), finger);
                             if(user.equals(roundLeader)) {
                                 continue;
                             }
