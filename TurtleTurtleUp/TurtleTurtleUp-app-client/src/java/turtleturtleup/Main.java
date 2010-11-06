@@ -265,6 +265,7 @@ public class Main {
 
     private static void join() {
         isPolling = true;
+        inGame = true;
         try {
             userManagement.joinGame();
         } catch (Exception e) {
@@ -328,12 +329,15 @@ public class Main {
             if (l != null) {
                 roundLeader += l;
             }
-            if (gameState.getTimeLeft() != 0) {
+            if (gameState.getTimeLeft() == 0) {
+                resetButtons();
+            } else {
                 timeRemaining = "Time left in round : " + (gameState.getTimeLeft() - 1);
             }
             if (userManagement.isInGame()) {
                 nextAction = "Pick a finger!";
             } else if (gameState.getEliminated().contains(userName)) {
+                inGame = false;
                 nextAction = "You were eliminated!";
             } else {
                 nextAction = "Waiting for game to start...";
