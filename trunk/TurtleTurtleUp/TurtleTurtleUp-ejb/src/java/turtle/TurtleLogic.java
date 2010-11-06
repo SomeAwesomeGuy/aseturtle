@@ -111,6 +111,7 @@ public class TurtleLogic implements TurtleLogicLocal {
                     }
                     else {
                         System.out.println("SERVER: Leader has picked " + lead);
+                        List<Player> garbage = new ArrayList<Player>();
                         for(Player user : players) {
                             Finger finger = user.getFinger();
 //                            recordFinger(user.getUsername(), finger);
@@ -125,8 +126,11 @@ public class TurtleLogic implements TurtleLogicLocal {
                             }
                             if(finger == null || finger == lead) {
                                 System.out.println("SERVER: " + user.getUsername() + " has been eliminated");
-                                eliminate(user);
+                                garbage.add(user);
                             }
+                        }
+                        for(Player user : garbage) {
+                            eliminate(user);
                         }
                         int index = players.indexOf(roundLeader) + 1;
                         roundLeader = index == players.size() ? players.get(0) : players.get(index);
