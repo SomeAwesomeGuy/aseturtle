@@ -32,5 +32,7 @@ public interface TurtleLogicLocal {
     boolean isLocked();
 
     boolean isInGame(String username);
+
+    void recordFinger(String username, Finger f);
     
 }

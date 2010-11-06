@@ -106,7 +106,7 @@ public class TurtleLogic implements TurtleLogicLocal {
                         roundLeader = nextLeader;
                         for(Player user : players) {
                             Finger finger = user.getFinger();
-//                            recordFinger(user.getUsername(), finger);
+                            recordFinger(user.getUsername(), finger);
                         }
                     }
                     else {
@@ -114,7 +114,7 @@ public class TurtleLogic implements TurtleLogicLocal {
                         List<Player> garbage = new ArrayList<Player>();
                         for(Player user : players) {
                             Finger finger = user.getFinger();
-//                            recordFinger(user.getUsername(), finger);
+                            recordFinger(user.getUsername(), finger);
                             if(user.equals(roundLeader)) {
                                 continue;
                             }
@@ -147,7 +147,8 @@ public class TurtleLogic implements TurtleLogicLocal {
         eliminated.add(user);
     }
 
-    private void recordFinger(String username, Finger f) {
+    @Override
+    public void recordFinger(String username, Finger f) {
         if(f != null) {
             UserEntity user = em.find(UserEntity.class, username);
             switch(f) {
