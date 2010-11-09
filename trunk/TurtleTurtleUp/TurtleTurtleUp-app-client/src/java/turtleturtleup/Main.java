@@ -35,6 +35,7 @@ public class Main {
     private final static LoginFrame start = new LoginFrame();
     private final static TurtleFrame gui = new TurtleFrame();
     private final static AdminFrame agui = new AdminFrame();
+    private final static StatFrame sgui = new StatFrame();
 
     private static String userName;
     private static GameState gameState = null;
@@ -239,7 +240,11 @@ public class Main {
                     naf.setVisible(false);
                     start.setVisible(true);
                 } catch (InvalidUsernameException e) {
-                    naf.infoLabel.setText("Sorry, that name has been taken");
+                    naf.infoLabel.setText("Sorry, that name is invalid or taken");
+                    naf.userField.setText("");
+                    naf.passField.setText("");
+                } catch (InvalidPasswordException e) {
+                    naf.infoLabel.setText("Invalid password");
                     naf.userField.setText("");
                     naf.passField.setText("");
                 } catch (Exception e) {
@@ -258,7 +263,64 @@ public class Main {
     }
 
     private static void stats() {
+         if (!isStatPageOpen) {
+            isStatPageOpen = true;
+            sgui.setVisible(true);
+            
+            sgui.infoLabel.setFont(NORMAL_FONT);
 
+            sgui.findButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    try {
+                        String u = sgui.userField.getText();
+                        UserRecord rec = userManagement.getUserRecord(u);
+                        String info = "<html><table border=\"1\"><tr><td><b><font size = 4> Name&nbsp&nbsp&nbsp</b></td>" +
+                            "<td><b><font size = 4> Games<br>Played</b></font></td>" +
+                            "<td><b><font size = 4> Win %</b></font></td>" +
+                            "<td><b><font size = 4> Thumb %</b></font></td>" +
+                            "<td><b><font size = 4> Index %</b></font></td>" +
+                            "<td><b><font size = 4> Middle %</b></font></td>" +
+                            "<td><b><font size = 4> Ring %</b></font></td>" +
+                            "<td><b><font size = 4> Pinky %</b></font></td></tr>";
+
+                        info += "<tr><td><font size = 4>" + u + "</td>" +
+                            "<td><font size = 4>" + rec.getGamesPlayed() + "</font></td>" +
+                            "<td><font size = 4>" + ((int) (rec.getWinPerc() * 100)) + "</font></td>" +
+                            "<td><font size = 4>" + ((int) (rec.getThumbPerc() * 100)) + "</font></td>" +
+                            "<td><font size = 4>" + ((int) (rec.getIndexPerc() * 100)) + "</font></td>" +
+                            "<td><font size = 4>" + ((int) (rec.getMiddlePerc() * 100)) + "</font></td>" +
+                            "<td><font size = 4>" + ((int) (rec.getRingPerc() * 100)) + "</font></td>" +
+                            "<td><font size = 4>" + ((int) (rec.getPinkiePerc() * 100)) + "</font></td></tr></html>";
+
+                        sgui.infoLabel.setText(info);
+                    } catch (InvalidUsernameException e) {
+                        sgui.infoLabel.setText("Could not find user");
+                    }catch (Exception e) {
+                        System.err.print(e);
+                        exit();
+                    }
+                }
+            });
+            sgui.doneButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    statExit();
+                }
+            });
+            sgui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            sgui.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    statExit();
+                }
+            });
+        }
+    }
+
+    private static void statExit() {
+        isStatPageOpen = false;
+        sgui.setVisible(false);
     }
 
     private static void spectate() {
@@ -289,6 +351,16 @@ public class Main {
                 e.printStackTrace();
                 exit();
             }
+
+            try {
+            userManagement.deleteUser("hi");
+            userManagement.kickPlayer("hi");
+            userManagement.promoteUser("hi");
+            userManagement.resetUserPassword("hi");
+            } catch (Exception e) {
+
+            }
+
 
             agui.okButton.addActionListener(new ActionListener() {
                 @Override
@@ -357,43 +429,43 @@ public class Main {
                     "<td><b><font size = 4> Middle</b></font></td>" +
                     "<td><b><font size = 4> Ring</b></font></td>" +
                     "<td><b><font size = 4> Pinky</b></font></td></tr><tr></tr>";
-            for (int i = 0; i < gameState.getOldPlayers().size(); i++) {
-                if(gameState.getFingerMap().get(gameState.getOldPlayers().get(i)) == null) {
-                    infoHeader += "<tr bgcolor=\"#ff0000\"> <td><font size = 4>" + gameState.getOldPlayers().get(i) + "</td>" +
+            for (int i = 0; i < gameState.getPlayedGame().size(); i++) {
+                if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == null) {
+                    infoHeader += "<tr bgcolor=\"#ff0000\"> <td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
                             "<td></td>" +
                             "<td></td>" +
                             "<td></td>" +
                             "<td></td>" +
                             "<td></td></tr>";
-                } else if(gameState.getFingerMap().get(gameState.getOldPlayers().get(i)) == Finger.THUMB) {
+                } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.THUMB) {
                     infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getOldPlayers().get(i) + "</td>" +
                             "<td><font size = 4><CENTER>x</CENTER></td>" +
                             "<td></td>" +
                             "<td></td>" +
                             "<td></td>" +
                             "<td></td></tr>";
-                } else if(gameState.getFingerMap().get(gameState.getOldPlayers().get(i)) == Finger.INDEX) {
+                } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.INDEX) {
                     infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getOldPlayers().get(i) + "</td>" +
                             "<td></td>" +
                             "<td><font size = 4><CENTER>x</CENTER></td>" +
                             "<td></td>" +
                             "<td></td>" +
                             "<td></td></tr>";
-                } else if(gameState.getFingerMap().get(gameState.getOldPlayers().get(i)) == Finger.MIDDLE) {
+                } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.MIDDLE) {
                     infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getOldPlayers().get(i) + "</td>" +
                             "<td></td>" +
                             "<td></td>" +
                             "<td><font size = 4><CENTER>x</CENTER></td>" +
                             "<td></td>" +
                             "<td></td></tr>";
-                } else if(gameState.getFingerMap().get(gameState.getOldPlayers().get(i)) == Finger.RING) {
+                } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.RING) {
                     infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getOldPlayers().get(i) + "</td>" +
                             "<td></td>" +
                             "<td></td>" +
                             "<td></td>" +
                             "<td><font size = 4><CENTER>x</CENTER></td>" +
                             "<td></td></tr>";
-                } else if(gameState.getFingerMap().get(gameState.getOldPlayers().get(i)) == Finger.PINKIE) {
+                } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.PINKIE) {
                     infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getOldPlayers().get(i) + "</td>" +
                             "<td></td>" +
                             "<td></td>" +
