@@ -31,6 +31,7 @@ public class TurtleLogic implements TurtleLogicLocal {
     private List<Player> players;
     private List<Player> eliminated;
     private List<Player> waitingList;
+    private List<String> gamePlayers;
     private List<DBChange> changeList;
 
     private Timer timer;
@@ -51,6 +52,7 @@ public class TurtleLogic implements TurtleLogicLocal {
         players = Collections.synchronizedList(new ArrayList<Player>());
         eliminated = Collections.synchronizedList(new ArrayList<Player>());
         waitingList = Collections.synchronizedList(new ArrayList<Player>());
+        gamePlayers = Collections.synchronizedList(new ArrayList<String>());
         changeList = Collections.synchronizedList(new ArrayList<DBChange>());
 
         state = new GameState();
@@ -149,48 +151,13 @@ public class TurtleLogic implements TurtleLogicLocal {
         eliminated.add(user);
     }
 
-    private void recordFinger(String username, Finger f) {
-        if(f != null) {
-            UserEntity user = em.find(UserEntity.class, username);
-            switch(f) {
-                case THUMB:
-                    user.setThumbCount(user.getThumbCount() + 1);
-                    break;
-                case INDEX:
-                    user.setIndexCount(user.getThumbCount() + 1);
-                    break;
-                case MIDDLE:
-                    user.setMiddleCount(user.getThumbCount() + 1);
-                    break;
-                case RING:
-                    user.setRingCount(user.getThumbCount() + 1);
-                    break;
-                case PINKIE:
-                    user.setPinkieCount(user.getThumbCount() + 1);
-                    break;
-            }
-            user.setRoundsPlayed(user.getRoundsPlayed() + 1);
-            em.merge(user);
-        }
-    }
-
-    private void recordGame(String username) {
-        UserEntity user = em.find(UserEntity.class, username);
-        user.setGamesPlayed(user.getGamesPlayed() + 1);
-        em.merge(user);
-    }
-
-    private void recordWin(String username) {
-        UserEntity user = em.find(UserEntity.class, username);
-        user.setGamesWon(user.getGamesWon() + 1);
-        em.merge(user);
-    }
-
     private void restartGame() {
         players.addAll(waitingList);
         waitingList.clear();
         eliminated.clear();
+        gamePlayers.clear();
         for(Player user : players) {
+            gamePlayers.add(user.getUsername());
             user.setFinger(null);
             changeList.add(new DBChange(user.getUsername(), DBChange.Type.GAME));
         }
@@ -205,6 +172,7 @@ public class TurtleLogic implements TurtleLogicLocal {
         state.setEliminated(eliminated);
         state.setCurrLeader(roundLeader.getUsername());
         state.setOldLeader("");
+        state.setPlayedGame(gamePlayers);
         state.setStatus(GameState.Status.NEW);
         System.out.println("\n\nSERVER: Starting new game with " + players.size() + " players");
         System.out.println("SERVER: Round 1 - leader: " + roundLeader.getUsername());
