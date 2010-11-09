@@ -73,6 +73,7 @@ public class GameState implements Serializable {
     }
 
     public void setPlayedGame(List<String> players) {
+        playedGame.clear();
         playedGame.addAll(players);
     }
 
