@@ -38,7 +38,13 @@ public class UserManagement implements UserManagementRemote {
      */
     @Override
     public boolean login(String username, String password) throws Exception {
-        // TODO: username/password validation to prevent SQL injection?
+        if(!isValid(username)) {
+            throw new InvalidUsernameException();
+        }
+        if(!isValid(password)) {
+            throw new InvalidPasswordException();
+        }
+
         user = checkUsername(username);
         if(!user.getPassword().equals(password)) {
             throw new InvalidPasswordException();
@@ -58,7 +64,13 @@ public class UserManagement implements UserManagementRemote {
      */
     @Override
     public void createNewUser(String username, String password) throws Exception {
-        // TODO: username/password validation to prevent SQL injection?
+        if(!isValid(username)) {
+            throw new InvalidUsernameException();
+        }
+        if(!isValid(password)) {
+            throw new InvalidPasswordException();
+        }
+        
         user = em.find(UserEntity.class, username);
         if(user != null) {
             throw new InvalidUsernameException();
@@ -94,6 +106,10 @@ public class UserManagement implements UserManagementRemote {
      */
     @Override
     public UserRecord getUserRecord(String username) throws Exception {
+        if(!isValid(username)) {
+            throw new InvalidUsernameException();
+        }
+        
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
@@ -112,6 +128,10 @@ public class UserManagement implements UserManagementRemote {
      */
     @Override
     public void changePassword(String oldPassword, String newPassword) throws Exception {
+        if(!isValid(oldPassword) || !isValid(newPassword)) {
+            throw new InvalidPasswordException();
+        }
+
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
@@ -174,6 +194,10 @@ public class UserManagement implements UserManagementRemote {
      */
     @Override
     public void promoteUser(String username) throws Exception {
+        if(!isValid(username)) {
+            throw new InvalidUsernameException();
+        }
+
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
@@ -194,6 +218,9 @@ public class UserManagement implements UserManagementRemote {
      */
     @Override
     public void kickPlayer(String username) throws Exception {
+        if(!isValid(username)) {
+            throw new InvalidUsernameException();
+        }
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
@@ -211,6 +238,10 @@ public class UserManagement implements UserManagementRemote {
      */
     @Override
     public void deleteUser(String username) throws Exception {
+        if(!isValid(username)) {
+            throw new InvalidUsernameException();
+        }
+
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
@@ -230,6 +261,9 @@ public class UserManagement implements UserManagementRemote {
      */
     @Override
     public void resetUserPassword(String username) throws Exception {
+        if(!isValid(username)) {
+            throw new InvalidUsernameException();
+        }
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
@@ -269,6 +303,7 @@ public class UserManagement implements UserManagementRemote {
         return player;
     }
 
+    @Override
     public boolean isInGame() throws Exception {
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
@@ -277,6 +312,7 @@ public class UserManagement implements UserManagementRemote {
         return turtleLogic.isInGame(username);
     }
 
+    @Override
     public List<String> getAllPlayers() throws Exception {
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
@@ -287,5 +323,13 @@ public class UserManagement implements UserManagementRemote {
         return playerList;
     }
 
-
+    private boolean isValid(String input) {
+        for(int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            if(!Character.isLetterOrDigit(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

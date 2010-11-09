@@ -16,10 +16,11 @@ CREATE TABLE users
 
 CREATE TABLE rounds
 (
-    roundID         int PRIMARY KEY,
-    gameID          int NOT NULL,
+    roundNum        int,
+    gameID          int,
     leader          int NOT NULL,
-    endtime         datetime
+    endtime         datetime,
+    PRIMARY KEY (gameID, roundNum)
 );
 
 CREATE TABLE games
@@ -29,4 +30,14 @@ CREATE TABLE games
     winner          varchar(20) NOT NULL,
     startTime       datetime,
     endTime         datetime
+);
+
+CREATE TABLE players
+(
+    username        varchar(20),
+    gameID          int,
+    roundNum        int,
+    finger          int,
+
+    PRIMARY KEY (username, gameID, roundNum)
 );
