@@ -23,13 +23,14 @@ public class GameState implements Serializable {
     private int roundNumber;
     private int timeLeft;
     private String oldLeader, currLeader;
-    private List<String> oldPlayers, eliminated;
+    private List<String> oldPlayers, eliminated, playedGame;
     private Map<String,Finger> fingerMap;
     private Status status;
 
     public GameState() {
         oldPlayers = new ArrayList<String>();
         eliminated = new ArrayList<String>();
+        playedGame = new ArrayList<String>();
         fingerMap = new HashMap<String,Finger>();
         roundNumber = 0;
     }
@@ -71,6 +72,10 @@ public class GameState implements Serializable {
         }
     }
 
+    public void setPlayedGame(List<String> players) {
+        playedGame.addAll(players);
+    }
+
     public Status getStatus() {
         return status;
     }
@@ -97,6 +102,10 @@ public class GameState implements Serializable {
 
     public List<String> getOldPlayers() {
         return oldPlayers;
+    }
+
+    public List<String> getPlayedGame() {
+        return playedGame;
     }
 
     public int getRoundNumber() {
