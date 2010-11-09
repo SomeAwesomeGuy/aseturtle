@@ -151,10 +151,11 @@ public class TurtleFrame extends javax.swing.JFrame {
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jScrollPane1.setOpaque(false);
 
+        infoLabel.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         infoLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jScrollPane1.setViewportView(infoLabel);
 
-        actionLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 16)); // NOI18N
+        actionLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 16));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -181,7 +182,7 @@ public class TurtleFrame extends javax.swing.JFrame {
                         .addComponent(pinkyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(196, 196, 196))
         );
         jPanel1Layout.setVerticalGroup(
