@@ -50,6 +50,7 @@ public class TurtleFrame extends javax.swing.JFrame {
         exitButton = new javax.swing.JButton();
         statButton = new javax.swing.JButton();
         adminButton = new javax.swing.JButton();
+        pwButton = new javax.swing.JButton();
         thumbButton = new javax.swing.JButton();
         indexButton = new javax.swing.JButton();
         middleButton = new javax.swing.JButton();
@@ -86,6 +87,8 @@ public class TurtleFrame extends javax.swing.JFrame {
 
         adminButton.setText("Admin");
 
+        pwButton.setText("Change PW");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -105,6 +108,10 @@ public class TurtleFrame extends javax.swing.JFrame {
                 .addContainerGap())
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(pwButton, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(adminButton, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -121,8 +128,10 @@ public class TurtleFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(statButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addComponent(pwButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(adminButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 202, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
                 .addComponent(exitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(23, 23, 23))
         );
@@ -151,7 +160,7 @@ public class TurtleFrame extends javax.swing.JFrame {
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jScrollPane1.setOpaque(false);
 
-        infoLabel.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        infoLabel.setFont(new java.awt.Font("SansSerif", 0, 14));
         infoLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jScrollPane1.setViewportView(infoLabel);
 
@@ -237,6 +246,7 @@ public class TurtleFrame extends javax.swing.JFrame {
     javax.swing.JButton joinButton;
     javax.swing.JButton middleButton;
     javax.swing.JButton pinkyButton;
+    javax.swing.JButton pwButton;
     javax.swing.JButton ringButton;
     javax.swing.JButton spectateButton;
     javax.swing.JButton statButton;
