@@ -270,7 +270,7 @@ public class TurtleLogic implements TurtleLogicLocal {
 
         for(DBChange change : changeList) {
             UserEntity user = em.find(UserEntity.class, change.username);
-            if(change.type == DBChange.Type.FINGER) {
+            if(change.type == DBChange.Type.FINGER && change.finger != null) {
                 switch(change.finger) {
                     case THUMB:
                         user.setThumbCount(user.getThumbCount() + 1);
