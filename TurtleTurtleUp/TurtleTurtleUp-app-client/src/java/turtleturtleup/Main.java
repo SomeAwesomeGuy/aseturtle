@@ -540,7 +540,7 @@ public class Main {
                         "<td><b><font size = 4> Ring</b></font></td>" +
                         "<td><b><font size = 4> Pinky</b></font></td></tr><tr></tr>";
                 for (int i = 0; i < gameState.getPlayedGame().size(); i++) {
-                    if (gameState.getStatus() == GameState.Status.WAITING || gameState.getRoundNumber() == 1) {
+                    if (gameState.getStatus() == GameState.Status.WAITING) {
                         infoHeader += "<tr>";
                     } else if (gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == null
                             || gameState.getEliminated().indexOf(gameState.getPlayedGame().get(i)) !=  -1) {
