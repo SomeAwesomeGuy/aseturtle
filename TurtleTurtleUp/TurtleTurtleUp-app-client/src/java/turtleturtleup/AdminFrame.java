@@ -36,21 +36,44 @@ public class AdminFrame extends javax.swing.JFrame {
         okButton = new javax.swing.JButton();
         lockServerCheckBox = new javax.swing.JCheckBox();
         cancelButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        userField = new javax.swing.JTextField();
+        resetButton = new javax.swing.JButton();
+        kickButton = new javax.swing.JButton();
+        deleteButton = new javax.swing.JButton();
+        adminButton = new javax.swing.JButton();
+        infoPanel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         backgroundPanel.setBackground(new java.awt.Color(210, 255, 238));
 
-        turtleLabel.setFont(new java.awt.Font("Constantia", 0, 18)); // NOI18N
+        turtleLabel.setFont(new java.awt.Font("Constantia", 0, 20)); // NOI18N
         turtleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         turtleLabel.setText("Admin Page");
 
-        okButton.setText("OK");
+        okButton.setText("Apply");
 
         lockServerCheckBox.setText("Lock Server");
         lockServerCheckBox.setOpaque(false);
 
-        cancelButton.setText("Cancel");
+        cancelButton.setText("Close");
+
+        jLabel1.setText("Username:");
+
+        jLabel2.setText("     Action:");
+
+        resetButton.setText("Reset Password");
+
+        kickButton.setText("Kick");
+
+        deleteButton.setText("Delete");
+
+        adminButton.setText("Make Admin");
+
+        infoPanel.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        infoPanel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout backgroundPanelLayout = new javax.swing.GroupLayout(backgroundPanel);
         backgroundPanel.setLayout(backgroundPanelLayout);
@@ -58,24 +81,54 @@ public class AdminFrame extends javax.swing.JFrame {
             backgroundPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(turtleLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backgroundPanelLayout.createSequentialGroup()
-                .addContainerGap(299, Short.MAX_VALUE)
+                .addContainerGap(293, Short.MAX_VALUE)
                 .addComponent(okButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cancelButton)
                 .addContainerGap())
             .addGroup(backgroundPanelLayout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addComponent(lockServerCheckBox)
-                .addContainerGap(310, Short.MAX_VALUE))
+                .addGap(37, 37, 37)
+                .addGroup(backgroundPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(backgroundPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(userField))
+                    .addComponent(lockServerCheckBox)
+                    .addGroup(backgroundPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(backgroundPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(resetButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(kickButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(adminButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(205, Short.MAX_VALUE))
+            .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
         );
         backgroundPanelLayout.setVerticalGroup(
             backgroundPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(backgroundPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(turtleLabel)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(infoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lockServerCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 284, Short.MAX_VALUE)
+                .addGap(27, 27, 27)
+                .addGroup(backgroundPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(userField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(backgroundPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(resetButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(kickButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(deleteButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(adminButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
                 .addGroup(backgroundPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(okButton))
@@ -97,11 +150,19 @@ public class AdminFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    javax.swing.JButton adminButton;
     private javax.swing.JPanel backgroundPanel;
     javax.swing.JButton cancelButton;
+    javax.swing.JButton deleteButton;
+    javax.swing.JLabel infoPanel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    javax.swing.JButton kickButton;
     javax.swing.JCheckBox lockServerCheckBox;
     javax.swing.JButton okButton;
+    javax.swing.JButton resetButton;
     private javax.swing.JLabel turtleLabel;
+    javax.swing.JTextField userField;
     // End of variables declaration//GEN-END:variables
 
 }

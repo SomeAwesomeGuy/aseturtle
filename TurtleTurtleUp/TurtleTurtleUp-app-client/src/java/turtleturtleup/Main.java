@@ -36,6 +36,8 @@ public class Main {
     private final static TurtleFrame gui = new TurtleFrame();
     private final static AdminFrame agui = new AdminFrame();
     private final static StatFrame sgui = new StatFrame();
+    private final static LockFrame lockgui = new LockFrame();
+    private final static ChangePWFrame pwgui = new ChangePWFrame();
 
     private static String userName;
     private static GameState gameState = null;
@@ -161,6 +163,13 @@ public class Main {
             }
         });
 
+        gui.pwButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                changepw();
+            }
+        });
+
         gui.exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
@@ -228,7 +237,6 @@ public class Main {
         naf.signUpButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                // TODO: check string for a-zA-z0-9
                 String uid = naf.userField.getText();
                 String password = "";
                 for (int i = 0; i < naf.passField.getPassword().length; i++) {
@@ -277,21 +285,21 @@ public class Main {
                         UserRecord rec = userManagement.getUserRecord(u);
                         String info = "<html><table border=\"1\"><tr><td><b><font size = 4> Name&nbsp&nbsp&nbsp</b></td>" +
                             "<td><b><font size = 4> Games<br>Played</b></font></td>" +
-                            "<td><b><font size = 4> Win %</b></font></td>" +
-                            "<td><b><font size = 4> Thumb %</b></font></td>" +
-                            "<td><b><font size = 4> Index %</b></font></td>" +
-                            "<td><b><font size = 4> Middle %</b></font></td>" +
-                            "<td><b><font size = 4> Ring %</b></font></td>" +
-                            "<td><b><font size = 4> Pinky %</b></font></td></tr>";
+                            "<td><b><font size = 4> Win</b></font></td>" +
+                            "<td><b><font size = 4> Thumb</b></font></td>" +
+                            "<td><b><font size = 4> Index</b></font></td>" +
+                            "<td><b><font size = 4> Middle</b></font></td>" +
+                            "<td><b><font size = 4> Ring</b></font></td>" +
+                            "<td><b><font size = 4> Pinky</b></font></td></tr>";
 
                         info += "<tr><td><font size = 4>" + u + "</td>" +
                             "<td><font size = 4>" + rec.getGamesPlayed() + "</font></td>" +
-                            "<td><font size = 4>" + ((int) (rec.getWinPerc() * 100)) + "</font></td>" +
-                            "<td><font size = 4>" + ((int) (rec.getThumbPerc() * 100)) + "</font></td>" +
-                            "<td><font size = 4>" + ((int) (rec.getIndexPerc() * 100)) + "</font></td>" +
-                            "<td><font size = 4>" + ((int) (rec.getMiddlePerc() * 100)) + "</font></td>" +
-                            "<td><font size = 4>" + ((int) (rec.getRingPerc() * 100)) + "</font></td>" +
-                            "<td><font size = 4>" + ((int) (rec.getPinkiePerc() * 100)) + "</font></td></tr></html>";
+                            "<td><font size = 4>" + ((int) (rec.getWinPerc() * 100)) + "%</font></td>" +
+                            "<td><font size = 4>" + ((int) (rec.getThumbPerc() * 100)) + "%</font></td>" +
+                            "<td><font size = 4>" + ((int) (rec.getIndexPerc() * 100)) + "%</font></td>" +
+                            "<td><font size = 4>" + ((int) (rec.getMiddlePerc() * 100)) + "%</font></td>" +
+                            "<td><font size = 4>" + ((int) (rec.getRingPerc() * 100)) + "%</font></td>" +
+                            "<td><font size = 4>" + ((int) (rec.getPinkiePerc() * 100)) + "%</font></td></tr></html>";
 
                         sgui.infoLabel.setText(info);
                     } catch (InvalidUsernameException e) {
@@ -324,19 +332,65 @@ public class Main {
     }
 
     private static void spectate() {
-        leaveGame();
-        isPolling = true;
+        if (!serverLock()) {
+            leaveGame();
+            isPolling = true;
+        }
+    }
+
+    private static void changepw() {
+        pwgui.setVisible(true);
+
+        pwgui.changeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                String oldpw = "";
+                for (int i = 0; i < pwgui.oldPassField.getPassword().length; i++) {
+                    oldpw += pwgui.oldPassField.getPassword()[i];
+                }
+                String newpw = "";
+                for (int i = 0; i < pwgui.newPassField.getPassword().length; i++) {
+                    newpw += pwgui.newPassField.getPassword()[i];
+                }
+                try {
+                    userManagement.changePassword(oldpw, newpw);
+                    pwgui.setVisible(false);
+                } catch (InvalidPasswordException e) {
+                    pwgui.infoLabel.setText("Invalid password");
+                    pwgui.newPassField.setText("");
+                    pwgui.oldPassField.setText("");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.exit(0);
+                }
+            }
+        });
+        pwgui.cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                pwgui.setVisible(false);
+            }
+        });
+        pwgui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        pwgui.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                pwgui.setVisible(false);
+            }
+        });
     }
 
     private static void join() {
-        isPolling = true;
-        inGame = true;
-        try {
-            userManagement.joinGame();
-        } catch (Exception e) {
-            System.err.println(e.toString());
-            e.printStackTrace();
-            exit();
+        if (!serverLock()) {
+            isPolling = true;
+            inGame = true;
+            try {
+                userManagement.joinGame();
+            } catch (Exception e) {
+                System.err.println(e.toString());
+                e.printStackTrace();
+                exit();
+            }
         }
     }
 
@@ -352,26 +406,81 @@ public class Main {
                 exit();
             }
 
-            try {
-            userManagement.deleteUser("hi");
-            userManagement.kickPlayer("hi");
-            userManagement.promoteUser("hi");
-            userManagement.resetUserPassword("hi");
-            } catch (Exception e) {
+            agui.kickButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    try {
+                        userManagement.kickPlayer(agui.userField.getText());
+                        agui.infoPanel.setText("User kicked");
+                    } catch (InvalidUsernameException e) {
+                        agui.infoPanel.setText("Uesr not found");
+                    } catch (ServerLockException e) {
+                        agui.infoPanel.setText("Server locked, no users to kick");
+                    } catch (Exception e) {
+                        agui.infoPanel.setText("User not in game");
+                    }
+                }
+            });
 
-            }
+            agui.deleteButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    try {
+                        userManagement.deleteUser(agui.userField.getText());
+                        agui.infoPanel.setText("User deleted");
+                    } catch (InvalidUsernameException e) {
+                        agui.infoPanel.setText("Uesr not found");
+                    } catch (Exception e) {
+                        System.err.print(e);
+                        exit();
+                    }
+                }
+            });
 
+            agui.adminButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    try {
+                        userManagement.promoteUser(agui.userField.getText());
+                        agui.infoPanel.setText("User is now an administrator");
+                    } catch (InvalidUsernameException e) {
+                        agui.infoPanel.setText("Uesr not found");
+                    } catch (Exception e) {
+                        System.err.print(e);
+                        exit();
+                    }
+                }
+            });
+
+            agui.resetButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    try {
+                        userManagement.resetUserPassword(agui.userField.getText());
+                        agui.infoPanel.setText("User's password has been reset");
+                    } catch (InvalidUsernameException e) {
+                        agui.infoPanel.setText("Uesr not found");
+                    } catch (Exception e) {
+                        System.err.print(e);
+                        exit();
+                    }
+                }
+            });
 
             agui.okButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     try {
                         userManagement.setServerLock(agui.lockServerCheckBox.isSelected());
+                        if (userManagement.isLocked()) {
+                            agui.infoPanel.setText("Server locked");
+                        } else {
+                            agui.infoPanel.setText("Server unlocked");
+                        }
                     } catch (Exception e) {
                         System.err.print(e);
                         exit();
                     }
-                    adminExit();
                 }
             });
             agui.cancelButton.addActionListener(new ActionListener() {
@@ -398,91 +507,125 @@ public class Main {
     private static void poll() {
         try {
             Thread.sleep(250);
-            gameState = userManagement.poll();
-            String l = gameState.getCurrLeader();
-            roundLeader = "Leader: ";
-            if (l != null) {
-                roundLeader += l;
-            }
-            if (gameState.getTimeLeft() == 0) {
-                resetButtons();
-            } else {
-                timeRemaining = "Time left in round : " + (gameState.getTimeLeft() - 1);
-            }
-            if (gameState.getStatus() == GameState.Status.WAITING) {
-                nextAction = "Waiting for game to start...";
-            } else if (gameState.getStatus() == GameState.Status.WINNER) {
-                nextAction = "Game Over! " + l + " won!";
-            } else if (userManagement.isInGame()) {
-                nextAction = "Pick a finger!";
-            } else if (gameState.getEliminated().contains(userName)) {
-                inGame = false;
-                nextAction = "You were eliminated!";
-            } 
-            gui.actionLabel.setText("<html>" + roundLeader + "<br>" +
-                    timeRemaining + "<br>" +
-                    nextAction + "</html>");
-
-            String infoHeader = "<html><tr><td><b><font size = 4> Player&nbsp&nbsp&nbsp</b></td>" +
-                    "<td><b><font size = 4> Thumb</b></font></td>" +
-                    "<td><b><font size = 4> Index</b></font></td>" +
-                    "<td><b><font size = 4> Middle</b></font></td>" +
-                    "<td><b><font size = 4> Ring</b></font></td>" +
-                    "<td><b><font size = 4> Pinky</b></font></td></tr><tr></tr>";
-            for (int i = 0; i < gameState.getPlayedGame().size(); i++) {
-                if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == null) {
-                    infoHeader += "<tr bgcolor=\"#ff0000\"> <td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
-                            "<td></td>" +
-                            "<td></td>" +
-                            "<td></td>" +
-                            "<td></td>" +
-                            "<td></td></tr>";
-                } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.THUMB) {
-                    infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
-                            "<td><font size = 4><CENTER>x</CENTER></td>" +
-                            "<td></td>" +
-                            "<td></td>" +
-                            "<td></td>" +
-                            "<td></td></tr>";
-                } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.INDEX) {
-                    infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
-                            "<td></td>" +
-                            "<td><font size = 4><CENTER>x</CENTER></td>" +
-                            "<td></td>" +
-                            "<td></td>" +
-                            "<td></td></tr>";
-                } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.MIDDLE) {
-                    infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
-                            "<td></td>" +
-                            "<td></td>" +
-                            "<td><font size = 4><CENTER>x</CENTER></td>" +
-                            "<td></td>" +
-                            "<td></td></tr>";
-                } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.RING) {
-                    infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
-                            "<td></td>" +
-                            "<td></td>" +
-                            "<td></td>" +
-                            "<td><font size = 4><CENTER>x</CENTER></td>" +
-                            "<td></td></tr>";
-                } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.PINKIE) {
-                    infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
-                            "<td></td>" +
-                            "<td></td>" +
-                            "<td></td>" +
-                            "<td></td>" +
-                            "<td><font size = 4><CENTER>x</CENTER></td></tr>";
+            if (!serverLock()) {
+                gameState = userManagement.poll();
+                String l = gameState.getCurrLeader();
+                roundLeader = "Leader: ";
+                if (l != null) {
+                    roundLeader += l;
                 }
+                if (gameState.getTimeLeft() == 0) {
+                    resetButtons();
+                } else {
+                    timeRemaining = "Time left in round : " + (gameState.getTimeLeft() - 1);
+                }
+                if (gameState.getStatus() == GameState.Status.WAITING) {
+                    nextAction = "Waiting for game to start...";
+                } else if (gameState.getStatus() == GameState.Status.WINNER) {
+                    nextAction = "Game Over! " + l + " won!";
+                } else if (userManagement.isInGame()) {
+                    nextAction = "Pick a finger!";
+                } else if (gameState.getEliminated().contains(userName)) {
+                    inGame = false;
+                    nextAction = "You were eliminated!";
+                }
+                gui.actionLabel.setText("<html>" + roundLeader + "<br>" +
+                        timeRemaining + "<br>" +
+                        nextAction + "</html>");
+
+                String infoHeader = "<html><tr><td><b><font size = 4> Player&nbsp&nbsp&nbsp</b></td>" +
+                        "<td><b><font size = 4> Thumb</b></font></td>" +
+                        "<td><b><font size = 4> Index</b></font></td>" +
+                        "<td><b><font size = 4> Middle</b></font></td>" +
+                        "<td><b><font size = 4> Ring</b></font></td>" +
+                        "<td><b><font size = 4> Pinky</b></font></td></tr><tr></tr>";
+                for (int i = 0; i < gameState.getPlayedGame().size(); i++) {
+                    if (gameState.getStatus() == GameState.Status.WAITING) {
+                        infoHeader += "<tr>";
+                    } else if (gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == null
+                            || gameState.getEliminated().indexOf(gameState.getPlayedGame().get(i)) !=  -1) {
+                        infoHeader += "<tr bgcolor=\"#ff0000\">";
+                    } else {
+                        infoHeader += "<tr bgcolor=\"#00ff00\">";
+                    }
+                    if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == null) {
+                        infoHeader += "<td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
+                                "<td></td>" +
+                                "<td></td>" +
+                                "<td></td>" +
+                                "<td></td>" +
+                                "<td></td></tr>";
+                    } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.THUMB) {
+                        infoHeader += "<td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
+                                "<td><font size = 4><CENTER>x</CENTER></td>" +
+                                "<td></td>" +
+                                "<td></td>" +
+                                "<td></td>" +
+                                "<td></td></tr>";
+                    } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.INDEX) {
+                        infoHeader += "<td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
+                                "<td></td>" +
+                                "<td><font size = 4><CENTER>x</CENTER></td>" +
+                                "<td></td>" +
+                                "<td></td>" +
+                                "<td></td></tr>";
+                    } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.MIDDLE) {
+                        infoHeader += "<td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
+                                "<td></td>" +
+                                "<td></td>" +
+                                "<td><font size = 4><CENTER>x</CENTER></td>" +
+                                "<td></td>" +
+                                "<td></td></tr>";
+                    } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.RING) {
+                        infoHeader += "<td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
+                                "<td></td>" +
+                                "<td></td>" +
+                                "<td></td>" +
+                                "<td><font size = 4><CENTER>x</CENTER></td>" +
+                                "<td></td></tr>";
+                    } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.PINKIE) {
+                        infoHeader += "<td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
+                                "<td></td>" +
+                                "<td></td>" +
+                                "<td></td>" +
+                                "<td></td>" +
+                                "<td><font size = 4><CENTER>x</CENTER></td></tr>";
+                    }
+                }
+                infoHeader += "</html>";
+                gui.infoLabel.setText(infoHeader);
             }
-            infoHeader += "</html>";
-            gui.infoLabel.setText(infoHeader);
-            
         } catch (InterruptedException e) {
         } catch (Exception e) {
             System.err.println(e);
             e.printStackTrace();
             exit();
         }
+    }
+
+    private static boolean serverLock() {
+        try {
+            if (userManagement.isLocked()) {
+                    lockgui.setVisible(true);
+                    lockgui.okButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent arg0) {
+                            lockgui.setVisible(false);
+                        }
+                    });
+                    lockgui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                    lockgui.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosing(WindowEvent e) {
+                            lockgui.setVisible(false);
+                        }
+                    });
+                return true;
+            }
+        } catch (Exception e) {
+            return true;
+        }
+        return false;
     }
 
     private static void leaveGame() {
