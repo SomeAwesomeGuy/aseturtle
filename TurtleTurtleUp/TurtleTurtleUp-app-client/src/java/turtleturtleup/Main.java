@@ -438,35 +438,35 @@ public class Main {
                             "<td></td>" +
                             "<td></td></tr>";
                 } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.THUMB) {
-                    infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getOldPlayers().get(i) + "</td>" +
+                    infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
                             "<td><font size = 4><CENTER>x</CENTER></td>" +
                             "<td></td>" +
                             "<td></td>" +
                             "<td></td>" +
                             "<td></td></tr>";
                 } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.INDEX) {
-                    infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getOldPlayers().get(i) + "</td>" +
+                    infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
                             "<td></td>" +
                             "<td><font size = 4><CENTER>x</CENTER></td>" +
                             "<td></td>" +
                             "<td></td>" +
                             "<td></td></tr>";
                 } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.MIDDLE) {
-                    infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getOldPlayers().get(i) + "</td>" +
+                    infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
                             "<td></td>" +
                             "<td></td>" +
                             "<td><font size = 4><CENTER>x</CENTER></td>" +
                             "<td></td>" +
                             "<td></td></tr>";
                 } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.RING) {
-                    infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getOldPlayers().get(i) + "</td>" +
+                    infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
                             "<td></td>" +
                             "<td></td>" +
                             "<td></td>" +
                             "<td><font size = 4><CENTER>x</CENTER></td>" +
                             "<td></td></tr>";
                 } else if(gameState.getFingerMap().get(gameState.getPlayedGame().get(i)) == Finger.PINKIE) {
-                    infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getOldPlayers().get(i) + "</td>" +
+                    infoHeader += "<tr bgcolor=\"#00ff00\"> <td><font size = 4>" + gameState.getPlayedGame().get(i) + "</td>" +
                             "<td></td>" +
                             "<td></td>" +
                             "<td></td>" +
