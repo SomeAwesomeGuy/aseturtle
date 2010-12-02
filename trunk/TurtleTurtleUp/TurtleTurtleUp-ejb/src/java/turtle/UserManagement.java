@@ -249,7 +249,7 @@ public class UserManagement implements UserManagementRemote {
             throw new InsufficientPrivilegeException();
         }
 
-        // TODO: kick player from game if necessary
+        turtleLogic.kickPlayer(username);
         UserEntity player = checkUsername(username);
         em.remove(player);
     }
