@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package turtle;
 
 import java.util.ArrayList;
@@ -75,9 +70,7 @@ public class TurtleLogic implements TurtleLogicLocal {
             }
             if(roundTime > 0) {
                 // Still time left on the clock
-//                System.out.println("SERVER: Time remaining: " + roundTime);
                 roundTime--;
-//                state.setStatus(GameState.Status.OLD);
                 state.setTimeLeft(roundTime);
             }
             else {
