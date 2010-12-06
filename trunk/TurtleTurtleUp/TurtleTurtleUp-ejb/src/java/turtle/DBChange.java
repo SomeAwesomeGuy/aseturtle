@@ -6,7 +6,7 @@
 package turtle;
 
 /**
- *
+ * Keeps track of a change to the database that needs to be made
  * @author Sean
  */
 public class DBChange {
