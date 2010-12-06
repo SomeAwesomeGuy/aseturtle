@@ -15,37 +15,37 @@ import javax.ejb.Remote;
 @Remote
 public interface UserManagementRemote {
 
-    boolean login(String username, String password) throws Exception;
+    boolean login(String username, String password) throws InvalidUsernameException, InvalidPasswordException;
 
-    void createNewUser(String username, String password) throws Exception;
+    void createNewUser(String username, String password) throws InvalidUsernameException, InvalidPasswordException;
 
-    List<String> getConnectedPlayers() throws Exception;
+    List<String> getConnectedPlayers() throws UserNotLoggedInException;
 
-    UserRecord getUserRecord(String username) throws Exception;
+    UserRecord getUserRecord(String username) throws InvalidUsernameException, UserNotLoggedInException;
 
-    void changePassword(String oldPassword, String newPassword) throws Exception;
+    void changePassword(String oldPassword, String newPassword) throws InvalidPasswordException, UserNotLoggedInException;
 
-    void joinGame() throws Exception;
+    void joinGame() throws UserNotLoggedInException, ServerLockException;
 
     void leaveGame();
 
-    void setServerLock(boolean enable) throws Exception;
+    void setServerLock(boolean enable) throws UserNotLoggedInException, InsufficientPrivilegeException;
 
-    void promoteUser(String username) throws Exception;
+    void promoteUser(String username) throws InvalidUsernameException, UserNotLoggedInException, InsufficientPrivilegeException;
 
-    void kickPlayer(String username) throws Exception;
+    void kickPlayer(String username) throws InvalidUsernameException, UserNotLoggedInException, InsufficientPrivilegeException;
 
-    void deleteUser(String username) throws Exception;
+    void deleteUser(String username) throws InvalidUsernameException, UserNotLoggedInException, InsufficientPrivilegeException;
 
-    void resetUserPassword(String username) throws Exception;
+    void resetUserPassword(String username) throws InvalidUsernameException, UserNotLoggedInException, InsufficientPrivilegeException;
 
-    void playTurn(Finger finger) throws Exception;
+    void playTurn(Finger finger) throws UserNotLoggedInException, ServerLockException;
 
-    boolean isLocked() throws Exception;
+    boolean isLocked() throws UserNotLoggedInException;
 
-    GameState poll() throws Exception;
+    GameState poll() throws UserNotLoggedInException, ServerLockException;
 
-    boolean isInGame() throws Exception;
+    boolean isInGame() throws UserNotLoggedInException;
 
-    List<String> getAllPlayers() throws Exception;
+    List<String> getAllPlayers() throws UserNotLoggedInException;
 }

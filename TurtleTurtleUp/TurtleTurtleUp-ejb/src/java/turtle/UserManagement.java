@@ -12,7 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 /**
- *
+ * Handles the client-server interaction
  * @author Sean
  */
 @Stateful
@@ -25,7 +25,7 @@ public class UserManagement implements UserManagementRemote {
     @PersistenceContext(unitName = "TurtleTurtleUp-ejbPU")
     private EntityManager em;
 
-    private UserEntity user;
+    private UserEntity user;    // the entity bean representing this user's database entry
     private String username;
     private boolean isAdmin, isLoggedIn;
 
@@ -34,10 +34,12 @@ public class UserManagement implements UserManagementRemote {
      * @param username      The username of the player
      * @param password      The password of the player
      * @return              true if the player is an admin
-     * @throws Exception
+     * @throws InvalidUsernameException
+     * @throws InvalidPasswordException
      */
     @Override
-    public boolean login(String username, String password) throws Exception {
+    public boolean login(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
+        // Check if the input contains valid characters
         if(!isValid(username)) {
             throw new InvalidUsernameException();
         }
@@ -45,8 +47,8 @@ public class UserManagement implements UserManagementRemote {
             throw new InvalidPasswordException();
         }
 
-        user = checkUsername(username);
-        if(!user.getPassword().equals(password)) {
+        user = checkUsername(username); // Check that user exists
+        if(!user.getPassword().equals(password)) {  // Input does not match user password
             throw new InvalidPasswordException();
         }
 
@@ -60,10 +62,12 @@ public class UserManagement implements UserManagementRemote {
      * Creates a new user account
      * @param username      the client's username
      * @param password      the client's password
-     * @throws Exception    if the username is taken
+     * @throws InvalidUsernameException
+     * @throws InvalidPasswordException
      */
     @Override
-    public void createNewUser(String username, String password) throws Exception {
+    public void createNewUser(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
+        // Check if the input contains valid characters
         if(!isValid(username)) {
             throw new InvalidUsernameException();
         }
@@ -72,16 +76,23 @@ public class UserManagement implements UserManagementRemote {
         }
         
         user = em.find(UserEntity.class, username);
-        if(user != null) {
+        if(user != null) {  // User by this name already exists
             throw new InvalidUsernameException();
         }
 
+        // Create new user record in database
         user = new UserEntity(username,password,false);
         em.persist(user);
     }
 
+    /**
+     * Gets the state of the game
+     * @return the state of the game as a GameState object
+     * @throws UserNotLoggedInException
+     * @throws ServerLockException
+     */
     @Override
-    public GameState poll() throws Exception {
+    public GameState poll() throws UserNotLoggedInException, ServerLockException {
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
@@ -89,8 +100,13 @@ public class UserManagement implements UserManagementRemote {
         return turtleLogic.getGameState();
     }
 
+    /**
+     * Gets the players currently playing or waiting to play
+     * @return the list of the usernames of players playing or waiting
+     * @throws UserNotLoggedInException
+     */
     @Override
-    public List<String> getConnectedPlayers() throws Exception {
+    public List<String> getConnectedPlayers() throws UserNotLoggedInException {
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
@@ -102,10 +118,11 @@ public class UserManagement implements UserManagementRemote {
      * Gets the player records for a particular user
      * @param username      the username of the player
      * @return              the records for the player
-     * @throws Exception    
+     * @throws InvalidUsernameException
+     * @throws UserNotLoggedInException
      */
     @Override
-    public UserRecord getUserRecord(String username) throws Exception {
+    public UserRecord getUserRecord(String username) throws InvalidUsernameException, UserNotLoggedInException {
         if(!isValid(username)) {
             throw new InvalidUsernameException();
         }
@@ -124,10 +141,11 @@ public class UserManagement implements UserManagementRemote {
      * Changes the password for the client's account
      * @param oldPassword   the current password, for verification
      * @param newPassword   the new password
-     * @throws Exception
+     * @throws InvalidPasswordException
+     * @throws UserNotLoggedInException
      */
     @Override
-    public void changePassword(String oldPassword, String newPassword) throws Exception {
+    public void changePassword(String oldPassword, String newPassword) throws InvalidPasswordException, UserNotLoggedInException {
         if(!isValid(oldPassword) || !isValid(newPassword)) {
             throw new InvalidPasswordException();
         }
@@ -135,18 +153,22 @@ public class UserManagement implements UserManagementRemote {
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
+        
         if(!user.getPassword().equals(oldPassword)) {
             throw new InvalidPasswordException();
         }
-
-        // TODO: username/password validation
 
         user.setPassword(newPassword);
         em.merge(user);
     }
 
+    /**
+     * Adds a player to the waitlist for the next game
+     * @throws UserNotLoggedInException
+     * @throws ServerLockException
+     */
     @Override
-    public void joinGame() throws Exception {
+    public void joinGame() throws UserNotLoggedInException, ServerLockException {
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
@@ -154,8 +176,14 @@ public class UserManagement implements UserManagementRemote {
         turtleLogic.joinGame(username);
     }
 
+    /**
+     * Sets the finger played for a player
+     * @param finger the finger played
+     * @throws UserNotLoggedInException
+     * @throws ServerLockException
+     */
     @Override
-    public void playTurn(Finger finger) throws Exception {
+    public void playTurn(Finger finger) throws UserNotLoggedInException, ServerLockException {
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
@@ -163,6 +191,9 @@ public class UserManagement implements UserManagementRemote {
         turtleLogic.playTurn(username, finger);
     }
 
+    /**
+     * Removes a player from the game
+     */
     @Override
     public void leaveGame() {
         if(isLoggedIn) {
@@ -173,10 +204,11 @@ public class UserManagement implements UserManagementRemote {
     /**
      * Sets the server lock, which prevents clients from playing and joining the game
      * @param enable        true to enable server lock
-     * @throws Exception
+     * @throws UserNotLoggedInException
+     * @throws InsufficientPrivilegeException
      */
     @Override
-    public void setServerLock(boolean enable) throws Exception {
+    public void setServerLock(boolean enable) throws UserNotLoggedInException, InsufficientPrivilegeException {
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
@@ -190,10 +222,12 @@ public class UserManagement implements UserManagementRemote {
     /**
      * Promotes a player to an administrator
      * @param username      the username of the player
-     * @throws Exception
+     * @throws InvalidUsernameException
+     * @throws UserNotLoggedInException
+     * @throws InsufficientPrivilegeException
      */
     @Override
-    public void promoteUser(String username) throws Exception {
+    public void promoteUser(String username) throws InvalidUsernameException, UserNotLoggedInException, InsufficientPrivilegeException {
         if(!isValid(username)) {
             throw new InvalidUsernameException();
         }
@@ -214,10 +248,12 @@ public class UserManagement implements UserManagementRemote {
     /**
      * Kicks a player out of a game
      * @param username      the username of the player
-     * @throws Exception
+     * @throws InvalidUsernameException
+     * @throws UserNotLoggedInException
+     * @throws InsufficientPrivilegeException
      */
     @Override
-    public void kickPlayer(String username) throws Exception {
+    public void kickPlayer(String username) throws InvalidUsernameException, UserNotLoggedInException, InsufficientPrivilegeException {
         if(!isValid(username)) {
             throw new InvalidUsernameException();
         }
@@ -234,10 +270,12 @@ public class UserManagement implements UserManagementRemote {
     /**
      * Deletes a player's account
      * @param username      the username of the player
-     * @throws Exception
+     * @throws InvalidUsernameException
+     * @throws UserNotLoggedInException
+     * @throws InsufficientPrivilegeException
      */
     @Override
-    public void deleteUser(String username) throws Exception {
+    public void deleteUser(String username) throws InvalidUsernameException, UserNotLoggedInException, InsufficientPrivilegeException {
         if(!isValid(username)) {
             throw new InvalidUsernameException();
         }
@@ -257,10 +295,12 @@ public class UserManagement implements UserManagementRemote {
     /**
      * Resets a player's account password to the default password
      * @param username      the username of the player
-     * @throws Exception
+     * @throws InvalidUsernameException
+     * @throws UserNotLoggedInException
+     * @throws InsufficientPrivilegeException
      */
     @Override
-    public void resetUserPassword(String username) throws Exception {
+    public void resetUserPassword(String username) throws InvalidUsernameException, UserNotLoggedInException, InsufficientPrivilegeException {
         if(!isValid(username)) {
             throw new InvalidUsernameException();
         }
@@ -278,11 +318,11 @@ public class UserManagement implements UserManagementRemote {
 
     /**
      * Checks if the server is locked
-     * @return              true if the server is locked
-     * @throws Exception
+     * @return true if the server is locked
+     * @throws UserNotLoggedInException
      */
     @Override
-    public boolean isLocked() throws Exception {
+    public boolean isLocked() throws UserNotLoggedInException {
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
@@ -303,8 +343,13 @@ public class UserManagement implements UserManagementRemote {
         return player;
     }
 
+    /**
+     * Checks if a player is playing a game or waiting to play
+     * @return true if the player is playing or waiting
+     * @throws UserNotLoggedInException
+     */
     @Override
-    public boolean isInGame() throws Exception {
+    public boolean isInGame() throws UserNotLoggedInException {
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
@@ -312,8 +357,13 @@ public class UserManagement implements UserManagementRemote {
         return turtleLogic.isInGame(username);
     }
 
+    /**
+     * Gets a list of all registered players
+     * @return a list of the usernames of all registered players
+     * @throws UserNotLoggedInException
+     */
     @Override
-    public List<String> getAllPlayers() throws Exception {
+    public List<String> getAllPlayers() throws UserNotLoggedInException {
         if(!isLoggedIn) {
             throw new UserNotLoggedInException();
         }
@@ -323,6 +373,11 @@ public class UserManagement implements UserManagementRemote {
         return playerList;
     }
 
+    /**
+     * Checks if the input contains valid characters
+     * @param input the input string
+     * @return true if the input is valid
+     */
     private boolean isValid(String input) {
         for(int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);

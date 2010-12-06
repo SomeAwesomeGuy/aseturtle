@@ -15,15 +15,15 @@ import javax.ejb.Local;
 @Local
 public interface TurtleLogicLocal {
 
-    void joinGame(String username) throws Exception;
+    void joinGame(String username) throws ServerLockException;
 
     void setServerLock(boolean enable);
 
-    void playTurn(String username, Finger finger) throws Exception;
+    void playTurn(String username, Finger finger) throws ServerLockException;
 
-    GameState getGameState() throws Exception;
+    GameState getGameState() throws ServerLockException;
 
-    void kickPlayer(String username) throws Exception;
+    void kickPlayer(String username);
 
     void leaveGame(String username);
 
