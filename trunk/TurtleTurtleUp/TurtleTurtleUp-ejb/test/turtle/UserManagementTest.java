@@ -51,7 +51,7 @@ public class UserManagementTest {
         props.setProperty("org.omg.CORBA.ORBInitialPort", "3700");
 
         ic = new InitialContext(props);
-        
+
     }
 
     @AfterClass
@@ -61,24 +61,24 @@ public class UserManagementTest {
     @Before
     public void setUp() throws Exception {
         instance = (UserManagementRemote) ic.lookup("turtle.UserManagementRemote");
-    }
-
-    @After
-    public void tearDown() throws Exception {
         loginAdmin();
         instance2.setServerLock(false);
         try {
             instance2.deleteUser(DEFAULT);
         } catch (InvalidUsernameException e) { }
         try {
-        instance2.deleteUser(SHORT);
+            instance2.deleteUser(SHORT);
         } catch (InvalidUsernameException e) { }
         try {
-        instance2.deleteUser(LONG);
+            instance2.deleteUser(LONG);
         } catch (InvalidUsernameException e) { }
         try {
-        instance2.deleteUser(INVALID);
+            instance2.deleteUser(INVALID);
         } catch (InvalidUsernameException e) { }
+    }
+
+    @After
+    public void tearDown() throws Exception {
     }
 
     private void loginAdmin() {
@@ -87,7 +87,8 @@ public class UserManagementTest {
             //hard coding is bad
             instance2.login("blinnc", "pass");
         } catch (Exception e) {
-
+            Logger.getLogger(UserManagementTest.class.getName()).log(Level.SEVERE, null, e);
+            fail();
         }
     }
 
@@ -109,9 +110,9 @@ public class UserManagementTest {
      */
     @Test
     public void testCreateNewUser() {
-        System.out.println("createNewUser");
+        System.err.println("createNewUser");
 
-       System.out.println("\tnull user string");
+       System.err.println("\tnull user string");
         try {
             instance.createNewUser(null, DEFAULT);
             fail();
@@ -123,7 +124,7 @@ public class UserManagementTest {
             // FAILS HERE: Caused by: java.lang.NullPointerException
         }
 
-        System.out.println("\tnull password string");
+        System.err.println("\tnull password string");
         try {
             instance.createNewUser(DEFAULT, null);
             fail();
@@ -135,7 +136,7 @@ public class UserManagementTest {
             // FAILS HERE: Caused by: java.lang.NullPointerException
         }
 
-        System.out.println("\tnull, null");
+        System.err.println("\tnull, null");
         try {
             instance.createNewUser(null, null);
             fail();
@@ -147,7 +148,7 @@ public class UserManagementTest {
             // FAILS HERE: Caused by: java.lang.NullPointerException
         }
 
-        System.out.println("\tinvalid user name");
+        System.err.println("\tinvalid user name");
         try {
             instance.createNewUser(INVALID, DEFAULT);
             fail();
@@ -158,7 +159,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tinvalid password");
+        System.err.println("\tinvalid password");
         try {
             instance.createNewUser(DEFAULT, INVALID);
             fail();
@@ -169,7 +170,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tuser name too short");
+        System.err.println("\tuser name too short");
         try {
             instance.createNewUser(SHORT, DEFAULT);
             fail();
@@ -181,7 +182,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tuser name too long");
+        System.err.println("\tuser name too long");
         try {
             instance.createNewUser(LONG, DEFAULT);
             fail();
@@ -193,7 +194,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tpassword too long");
+        System.err.println("\tpassword too long");
         try {
             instance.createNewUser(DEFAULT, LONG);
             fail();
@@ -205,7 +206,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tpassword too short");
+        System.err.println("\tpassword too short");
         try {
             instance.createNewUser(DEFAULT, SHORT);
             fail();
@@ -217,14 +218,15 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tnormal case");
+        System.err.println("\tnormal case");
         try {
             instance.createNewUser(DEFAULT, DEFAULT);
         } catch (Exception ex) {
+            Logger.getLogger(UserManagementTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();
         }
 
-        System.out.println("\talready created user");
+        System.err.println("\talready created user");
         try {
             instance.createNewUser(DEFAULT, DEFAULT);
             fail();
@@ -242,9 +244,9 @@ public class UserManagementTest {
      */
     @Test
     public void testLogin() throws Exception {
-        System.out.println("login");
+        System.err.println("login");
 
-        System.out.println("\tinvalid username");
+        System.err.println("\tinvalid username");
         try {
             instance.login(INVALID, DEFAULT);
             fail();
@@ -255,7 +257,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tinvalid password");
+        System.err.println("\tinvalid password");
         try {
             instance.login(DEFAULT, INVALID);
             fail();
@@ -266,7 +268,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tusername too short");
+        System.err.println("\tusername too short");
         try {
             instance.login(SHORT, DEFAULT);
             fail();
@@ -277,7 +279,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tuser name too long");
+        System.err.println("\tuser name too long");
         try {
             instance.login(LONG, DEFAULT);
             fail();
@@ -288,7 +290,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tnull user");
+        System.err.println("\tnull user");
         try {
             instance.login(null, DEFAULT);
             fail();
@@ -300,7 +302,7 @@ public class UserManagementTest {
             // FAILS HERE: Caused by: java.lang.NullPointerException
         }
 
-        System.out.println("\tnull password");
+        System.err.println("\tnull password");
         try {
             instance.login(DEFAULT, null);
             fail();
@@ -312,7 +314,7 @@ public class UserManagementTest {
             // FAILS HERE: Caused by: java.lang.NullPointerException
         }
 
-        System.out.println("\tnull null");
+        System.err.println("\tnull null");
         try {
             instance.login(null, null);
             fail();
@@ -324,7 +326,7 @@ public class UserManagementTest {
             // FAILS HERE: Caused by: java.lang.NullPointerException
         }
 
-        System.out.println("\tuser doesn't exist");
+        System.err.println("\tuser doesn't exist");
         try {
             instance.login(FAKE, DEFAULT);
             fail();
@@ -335,10 +337,10 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tnormal case");
+        System.err.println("\tnormal case");
         login();
 
-        System.out.println("\tlogin as the same user");
+        System.err.println("\tlogin as the same user");
         try {
             instance.login(DEFAULT, DEFAULT);
             fail();
@@ -350,7 +352,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tlogin as different user");
+        System.err.println("\tlogin as different user");
         try {
             // hard coding is bad
             instance.login("blinnc", "pass");
@@ -369,9 +371,9 @@ public class UserManagementTest {
      */
     @Test
     public void testChangePassword() throws Exception {
-        System.out.println("changePassword");
+        System.err.println("changePassword");
 
-        System.out.println("\tnot logged in");
+        System.err.println("\tnot logged in");
         try {
             instance.changePassword(DEFAULT, DEFAULT);
             fail();
@@ -383,7 +385,7 @@ public class UserManagementTest {
         }
 
         login();
-        System.out.println("\tnull normal password");
+        System.err.println("\tnull normal password");
         try {
             instance.changePassword(null, DEFAULT);
             fail();
@@ -395,7 +397,7 @@ public class UserManagementTest {
             // FAILS HERE: Caused by: java.lang.NullPointerException
         }
 
-        System.out.println("\tnull new password");
+        System.err.println("\tnull new password");
         try {
             instance.changePassword(DEFAULT, null);
             fail();
@@ -407,7 +409,7 @@ public class UserManagementTest {
             // FAILS HERE: Caused by: java.lang.NullPointerException
         }
 
-        System.out.println("\tinvalid string normal password");
+        System.err.println("\tinvalid string normal password");
         try {
             instance.changePassword(INVALID, DEFAULT);
             fail();
@@ -418,7 +420,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tinvalid string new password");
+        System.err.println("\tinvalid string new password");
         try {
             instance.changePassword(DEFAULT, INVALID);
             fail();
@@ -429,7 +431,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tincorrect normal password");
+        System.err.println("\tincorrect normal password");
         try {
             instance.changePassword(FAKE, DEFAULT);
             fail();
@@ -440,7 +442,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tnormal case");
+        System.err.println("\tnormal case");
         try {
             instance.changePassword(DEFAULT, FAKE);
         } catch (Exception ex) {
@@ -455,9 +457,9 @@ public class UserManagementTest {
      */
     @Test
     public void testSetServerLock() throws Exception {
-        System.out.println("setServerLock");
+        System.err.println("setServerLock");
 
-        System.out.println("\tnot logged in");
+        System.err.println("\tnot logged in");
         try {
             instance.setServerLock(false);
             fail();
@@ -469,11 +471,11 @@ public class UserManagementTest {
         }
         login();
 
-        System.out.println("\tinitial lock is true");
-        assertTrue(instance.isLocked());
+        System.err.println("\tlock is currently false");
+        assertFalse(instance.isLocked());
         // FAILS HERE: not sure why, but returns false, could be problem with test
 
-        System.out.println("\tnot logged in as admin");
+        System.err.println("\tnot logged in as admin");
         try {
             instance.setServerLock(false);
             fail();
@@ -484,8 +486,7 @@ public class UserManagementTest {
             fail();
         }
 
-        loginAdmin();
-        System.out.println("\tset lock false");
+        System.err.println("\tset lock false");
         try {
             instance2.setServerLock(false);
         } catch (Exception ex) {
@@ -494,7 +495,7 @@ public class UserManagementTest {
         }
         assertFalse(instance.isLocked());
 
-        System.out.println("\tset lock false again");
+        System.err.println("\tset lock false again");
         try {
             instance2.setServerLock(false);
         } catch (Exception ex) {
@@ -503,7 +504,7 @@ public class UserManagementTest {
         }
         assertFalse(instance.isLocked());
 
-        System.out.println("\tset lock true");
+        System.err.println("\tset lock true");
         try {
             instance2.setServerLock(true);
         } catch (Exception ex) {
@@ -512,7 +513,7 @@ public class UserManagementTest {
         }
         assertTrue(instance.isLocked());
 
-        System.out.println("\tset lock true again");
+        System.err.println("\tset lock true again");
         try {
             instance2.setServerLock(true);
         } catch (Exception ex) {
@@ -527,8 +528,8 @@ public class UserManagementTest {
      */
     @Test
     public void testPromoteUser() throws Exception {
-        System.out.println("promoteUser");
-        System.out.println("\tnot logged in");
+        System.err.println("promoteUser");
+        System.err.println("\tnot logged in");
         try {
             instance.promoteUser(DEFAULT);
             fail();
@@ -540,7 +541,7 @@ public class UserManagementTest {
         }
         login();
 
-        System.out.println("\tnot logged in as admin");
+        System.err.println("\tnot logged in as admin");
         try {
             instance.promoteUser(DEFAULT);
             fail();
@@ -550,9 +551,8 @@ public class UserManagementTest {
             Logger.getLogger(UserManagementTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();
         }
-        loginAdmin();
 
-        System.out.println("\tnull user name");
+        System.err.println("\tnull user name");
         try {
             instance2.promoteUser(null);
             fail();
@@ -564,7 +564,7 @@ public class UserManagementTest {
             // FAILS HERE: Caused by: java.lang.NullPointerException
         }
 
-        System.out.println("\tinvalid user string");
+        System.err.println("\tinvalid user string");
         try {
             instance2.promoteUser(INVALID);
             fail();
@@ -575,7 +575,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tuser does not exist");
+        System.err.println("\tuser does not exist");
         try {
             instance2.promoteUser(FAKE);
             fail();
@@ -585,21 +585,21 @@ public class UserManagementTest {
             Logger.getLogger(UserManagementTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();
         }
-        System.out.println("\tnormal case");
+        System.err.println("\tnormal case");
         try {
             instance2.promoteUser(DEFAULT);
         } catch (Exception ex) {
             Logger.getLogger(UserManagementTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();
         }
-        System.out.println("\tpromote self");
+        System.err.println("\tpromote self");
         try {
             instance2.promoteUser("blinnc");
         } catch (Exception ex) {
             Logger.getLogger(UserManagementTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();
         }
-        System.out.println("\toriginal user promotes without logging back in");
+        System.err.println("\toriginal user promotes without logging back in");
         try {
             instance.promoteUser(DEFAULT);
             fail();
@@ -610,7 +610,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tpromote other admin");
+        System.err.println("\tpromote other admin");
         try {
             instance2.promoteUser(DEFAULT);
         } catch (Exception ex) {
@@ -624,8 +624,8 @@ public class UserManagementTest {
      */
     @Test
     public void testDeleteUser() throws Exception {
-        System.out.println("deleteUser");
-        System.out.println("\tnot logged in");
+        System.err.println("deleteUser");
+        System.err.println("\tnot logged in");
         try {
             instance.deleteUser(DEFAULT);
             fail();
@@ -637,9 +637,9 @@ public class UserManagementTest {
         }
         login();
 
-        System.out.println("\tnot logged in as admin");
+        System.err.println("\tnot logged in as admin");
         try {
-            instance.deleteUser(DEFAULT);
+            instance.deleteUser("blinnc");
             fail();
         } catch (InsufficientPrivilegeException e) {
 
@@ -647,9 +647,8 @@ public class UserManagementTest {
             Logger.getLogger(UserManagementTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();
         }
-        loginAdmin();
 
-        System.out.println("\tnull string");
+        System.err.println("\tnull string");
         try {
             instance2.deleteUser(null);
             fail();
@@ -661,7 +660,7 @@ public class UserManagementTest {
             // FAILS HERE: Caused by: java.lang.NullPointerException
         }
 
-        System.out.println("\tinvalid string");
+        System.err.println("\tinvalid string");
         try {
             instance2.deleteUser(INVALID);
             fail();
@@ -672,7 +671,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tuser does not exist");
+        System.err.println("\tuser does not exist");
         try {
             instance2.deleteUser(FAKE);
             fail();
@@ -683,7 +682,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tdelete self");
+        System.err.println("\tdelete self");
         try {
             instance2.deleteUser("blinnc");
             fail();
@@ -695,7 +694,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tdelete normal user / admin");
+        System.err.println("\tdelete normal user / admin");
         try {
             instance2.promoteUser(DEFAULT);
             instance2.deleteUser(DEFAULT);
@@ -710,8 +709,8 @@ public class UserManagementTest {
      */
     @Test
     public void testResetUserPassword() throws Exception {
-        System.out.println("resetUserPassword");
-        System.out.println("\tnot logged in");
+        System.err.println("resetUserPassword");
+        System.err.println("\tnot logged in");
         try {
             instance.resetUserPassword(DEFAULT);
             fail();
@@ -723,7 +722,7 @@ public class UserManagementTest {
         }
         login();
 
-        System.out.println("\tnot logged in as admin");
+        System.err.println("\tnot logged in as admin");
         try {
             instance.resetUserPassword(DEFAULT);
             fail();
@@ -733,9 +732,8 @@ public class UserManagementTest {
             Logger.getLogger(UserManagementTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();
         }
-        loginAdmin();
 
-        System.out.println("\tnull string");
+        System.err.println("\tnull string");
         try {
             instance2.resetUserPassword(null);
             fail();
@@ -747,7 +745,7 @@ public class UserManagementTest {
             // FAILS HERE: Caused by: java.lang.NullPointerException
         }
 
-        System.out.println("\tinvalid string");
+        System.err.println("\tinvalid string");
         try {
             instance2.resetUserPassword(INVALID);
             fail();
@@ -758,7 +756,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tuser does not exist");
+        System.err.println("\tuser does not exist");
         try {
             instance2.resetUserPassword(FAKE);
             fail();
@@ -769,7 +767,7 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\tnormal");
+        System.err.println("\tnormal");
         try {
             instance2.resetUserPassword(DEFAULT);
         } catch (Exception ex) {
@@ -777,12 +775,21 @@ public class UserManagementTest {
             fail();
         }
 
-        System.out.println("\treset your own password");
+        System.err.println("\treset your own password");
         try {
             instance2.resetUserPassword("blinnc");
         } catch (Exception ex) {
             Logger.getLogger(UserManagementTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();
+        }
+        try {
+            instance2.changePassword("pass", "pass1");
+            instance2.changePassword("pass1", "pass");
+        } catch (Exception ex) {
+        }
+        try {
+            instance2.changePassword("default", "pass");
+        } catch (Exception ex) {
         }
     }
 }
