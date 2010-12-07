@@ -379,6 +379,9 @@ public class UserManagement implements UserManagementRemote {
      * @return true if the input is valid
      */
     private boolean isValid(String input) {
+        if(null == input || input.length() < 4 || input.length() > 12) {
+            return false;
+        }
         for(int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
             if(!Character.isLetterOrDigit(c)) {
