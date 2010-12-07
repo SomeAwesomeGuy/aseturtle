@@ -161,7 +161,7 @@ public class UserManagement implements UserManagementRemote {
 
         user.setPassword(newPassword);
         em.merge(user);
-        em.persist(user);
+//        em.persist(user);
     }
 
     /**
@@ -245,7 +245,7 @@ public class UserManagement implements UserManagementRemote {
 
         player.setIsAdmin(true);
         em.merge(player);
-        em.persist(user);
+//        em.persist(user);
     }
 
     /**
@@ -317,7 +317,7 @@ public class UserManagement implements UserManagementRemote {
         UserEntity player = checkUsername(username);
         player.setPassword(DEFAULT_PASSWORD);
         em.merge(player);
-        em.persist(user);
+//        em.persist(user);
     }
 
     /**
