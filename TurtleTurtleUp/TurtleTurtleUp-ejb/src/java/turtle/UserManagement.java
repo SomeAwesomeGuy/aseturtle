@@ -27,7 +27,8 @@ public class UserManagement implements UserManagementRemote {
 
     private UserEntity user;    // the entity bean representing this user's database entry
     private String username;
-    private boolean isAdmin, isLoggedIn;
+    private boolean isAdmin = false;
+    private boolean isLoggedIn = false;
 
     /**
      * Logs a user into the server
@@ -40,7 +41,7 @@ public class UserManagement implements UserManagementRemote {
     @Override
     public boolean login(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
         // Check if the input contains valid characters
-        if(!isValid(username)) {
+        if(!isValid(username) || isLoggedIn) {
             throw new InvalidUsernameException();
         }
         if(!isValid(password)) {
@@ -160,6 +161,7 @@ public class UserManagement implements UserManagementRemote {
 
         user.setPassword(newPassword);
         em.merge(user);
+        em.persist(user);
     }
 
     /**
@@ -243,6 +245,7 @@ public class UserManagement implements UserManagementRemote {
 
         player.setIsAdmin(true);
         em.merge(player);
+        em.persist(user);
     }
 
     /**
@@ -276,7 +279,7 @@ public class UserManagement implements UserManagementRemote {
      */
     @Override
     public void deleteUser(String username) throws InvalidUsernameException, UserNotLoggedInException, InsufficientPrivilegeException {
-        if(!isValid(username)) {
+        if(!isValid(username) || username.equals(this.username)) {
             throw new InvalidUsernameException();
         }
 
@@ -314,6 +317,7 @@ public class UserManagement implements UserManagementRemote {
         UserEntity player = checkUsername(username);
         player.setPassword(DEFAULT_PASSWORD);
         em.merge(player);
+        em.persist(user);
     }
 
     /**
