@@ -414,8 +414,6 @@ public class Main {
                         agui.infoPanel.setText("User kicked");
                     } catch (InvalidUsernameException e) {
                         agui.infoPanel.setText("Uesr not found");
-                    } catch (ServerLockException e) {
-                        agui.infoPanel.setText("Server locked, no users to kick");
                     } catch (Exception e) {
                         agui.infoPanel.setText("User not in game");
                     }
