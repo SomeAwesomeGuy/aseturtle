@@ -49,7 +49,7 @@ public class UserManagement implements UserManagementRemote {
         }
 
         user = checkUsername(username); // Check that user exists
-        if(!user.getPassword().equals(password)) {  // Input does not match user password
+        if(!user.getPassword().equals("" + password.hashCode())) {  // Input does not match user password
             throw new InvalidPasswordException();
         }
 
@@ -82,7 +82,7 @@ public class UserManagement implements UserManagementRemote {
         }
 
         // Create new user record in database
-        user = new UserEntity(username,password,false);
+        user = new UserEntity(username, "" + password.hashCode(), false);
         em.persist(user);
     }
 
@@ -155,11 +155,11 @@ public class UserManagement implements UserManagementRemote {
             throw new UserNotLoggedInException();
         }
         
-        if(!user.getPassword().equals(oldPassword)) {
+        if(!user.getPassword().equals("" + oldPassword.hashCode())) {
             throw new InvalidPasswordException();
         }
 
-        user.setPassword(newPassword);
+        user.setPassword("" + newPassword.hashCode());
         em.merge(user);
 //        em.persist(user);
     }
@@ -315,7 +315,7 @@ public class UserManagement implements UserManagementRemote {
         }
 
         UserEntity player = checkUsername(username);
-        player.setPassword(DEFAULT_PASSWORD);
+        player.setPassword(DEFAULT_PASSWORD.hashCode() + "");
         em.merge(player);
 //        em.persist(user);
     }
